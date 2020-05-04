@@ -218,7 +218,7 @@ class GloveEncoder(nn.Module):
         self.pos1_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
-        self.linear = nn.Linear(6400, self.hidden_size)
+        self.linear = nn.Linear(6400, self.hidden_size*2)
 
     def forward(self, token):
         """
@@ -231,7 +231,6 @@ class GloveEncoder(nn.Module):
         """
         # Check size of tensors
         x = self.word_embedding(token)
-        x = torch.tensor(x)
         x = self.linear(x)
         return x
 
