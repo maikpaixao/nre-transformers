@@ -6,7 +6,7 @@ import numpy as np
 import json
 import opennre
 from opennre import encoder, model, framework
-from opennre.encoder import base_encoder.GloveEncoder
+from opennre.encoder.base_encoder import GloveEncoder
 
 ckpt = 'ckpt/semeval_cnn_softmax.pth.tar'
 wordi2d = json.load(open('../pretrain/glove/glove.6B.50d_word2id.json'))
