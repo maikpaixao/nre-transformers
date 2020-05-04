@@ -191,7 +191,7 @@ class GloveEncoder(nn.Module):
             self.word_size = word2vec.shape[-1]
 
         self.position_size = position_size
-        self.hidden_size = hidden_size
+        self.hidden_size = 50
         self.input_size = word_size + position_size * 2
         self.blank_padding = blank_padding
 
@@ -218,7 +218,7 @@ class GloveEncoder(nn.Module):
         self.pos1_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
-        self.linear = nn.Linear(self.hidden_size, self.hidden_size)
+        self.linear = nn.Linear(6400, self.hidden_size)
 
     def forward(self, token):
         """
