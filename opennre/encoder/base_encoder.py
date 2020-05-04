@@ -7,10 +7,10 @@ from ..tokenization import WordTokenizer
 
 class BaseEncoder(nn.Module):
 
-    def __init__(self, 
-                 token2id, 
-                 max_length=128, 
-                 hidden_size=230, 
+    def __init__(self,
+                 token2id,
+                 max_length=128,
+                 hidden_size=230,
                  word_size=50,
                  position_size=5,
                  blank_padding=True,
@@ -39,7 +39,7 @@ class BaseEncoder(nn.Module):
             self.word_size = word_size
         else:
             self.word_size = word2vec.shape[-1]
-            
+
         self.position_size = position_size
         self.hidden_size = hidden_size
         self.input_size = word_size + position_size * 2
@@ -57,7 +57,7 @@ class BaseEncoder(nn.Module):
         if word2vec is not None:
             logging.info("Initializing word embedding with word2vec.")
             word2vec = torch.from_numpy(word2vec)
-            if self.num_token == len(word2vec) + 2:            
+            if self.num_token == len(word2vec) + 2:
                 unk = torch.randn(1, self.word_size) / math.sqrt(self.word_size)
                 blk = torch.zeros(1, self.word_size)
                 self.word_embedding.weight.data.copy_(torch.cat([word2vec, unk, blk], 0))
@@ -80,14 +80,14 @@ class BaseEncoder(nn.Module):
         """
         # Check size of tensors
         pass
-    
+
     def tokenize(self, item):
         """
         Args:
             item: input instance, including sentence, entity positions, etc.
             is_token: if is_token == True, sentence becomes an array of token
         Return:
-            index number of tokens and positions             
+            index number of tokens and positions
         """
         if 'text' in item:
             sentence = item['text']
@@ -120,7 +120,7 @@ class BaseEncoder(nn.Module):
                 pos_head = [len(sent_0) + len(ent_0) + len(sent_1), len(sent_0) + len(ent_0) + len(sent_1) + len(ent_1)]
             else:
                 pos_head = [len(sent_0), len(sent_0) + len(ent_0)]
-                pos_tail = [len(sent_0) + len(ent_0) + len(sent_1), len(sent_0) + len(ent_0) + len(sent_1) + len(ent_1)]           
+                pos_tail = [len(sent_0) + len(ent_0) + len(sent_1), len(sent_0) + len(ent_0) + len(sent_1) + len(ent_1)]
         else:
             tokens = sentence
 
@@ -139,7 +139,7 @@ class BaseEncoder(nn.Module):
             pos1.append(min(i - pos1_in_index + self.max_length, 2 * self.max_length - 1))
             pos2.append(min(i - pos2_in_index + self.max_length, 2 * self.max_length - 1))
 
-        if self.blank_padding:                
+        if self.blank_padding:
             while len(pos1) < self.max_length:
                 pos1.append(0)
             while len(pos2) < self.max_length:
@@ -151,15 +151,15 @@ class BaseEncoder(nn.Module):
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
         pos1 = torch.tensor(pos1).long().unsqueeze(0) # (1, L)
         pos2 = torch.tensor(pos2).long().unsqueeze(0) # (1, L)
-        
+
         return indexed_tokens, pos1, pos2
-    
+
 class GloveEncoder(nn.Module):
-    def __init__(self, 
-                 token2id, 
-                 max_length=128, 
-                 hidden_size=230, 
-                 word_size=100,
+    def __init__(self,
+                 token2id,
+                 max_length=128,
+                 hidden_size=230,
+                 word_size=50,
                  position_size=5,
                  blank_padding=True,
                  word2vec=None,
@@ -187,7 +187,7 @@ class GloveEncoder(nn.Module):
             self.word_size = word_size
         else:
             self.word_size = word2vec.shape[-1]
-            
+
         self.position_size = position_size
         self.hidden_size = hidden_size
         self.input_size = word_size + position_size * 2
@@ -205,7 +205,7 @@ class GloveEncoder(nn.Module):
         if word2vec is not None:
             logging.info("Initializing word embedding with word2vec.")
             word2vec = torch.from_numpy(word2vec)
-            if self.num_token == len(word2vec) + 2:            
+            if self.num_token == len(word2vec) + 2:
                 unk = torch.randn(1, self.word_size) / math.sqrt(self.word_size)
                 blk = torch.zeros(1, self.word_size)
                 self.word_embedding.weight.data.copy_(torch.cat([word2vec, unk, blk], 0))
@@ -228,14 +228,14 @@ class GloveEncoder(nn.Module):
         """
         # Check size of tensors
         pass
-    
+
     def tokenize(self, item):
         """
         Args:
             item: input instance, including sentence, entity positions, etc.
             is_token: if is_token == True, sentence becomes an array of token
         Return:
-            index number of tokens and positions             
+            index number of tokens and positions
         """
         if 'text' in item:
             sentence = item['text']
@@ -268,7 +268,7 @@ class GloveEncoder(nn.Module):
                 pos_head = [len(sent_0) + len(ent_0) + len(sent_1), len(sent_0) + len(ent_0) + len(sent_1) + len(ent_1)]
             else:
                 pos_head = [len(sent_0), len(sent_0) + len(ent_0)]
-                pos_tail = [len(sent_0) + len(ent_0) + len(sent_1), len(sent_0) + len(ent_0) + len(sent_1) + len(ent_1)]           
+                pos_tail = [len(sent_0) + len(ent_0) + len(sent_1), len(sent_0) + len(ent_0) + len(sent_1) + len(ent_1)]
         else:
             tokens = sentence
 
@@ -277,6 +277,5 @@ class GloveEncoder(nn.Module):
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
         else:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
-        
-        return indexed_tokens
 
+        return indexed_tokens
