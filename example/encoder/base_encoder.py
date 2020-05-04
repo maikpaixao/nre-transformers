@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import numpy as np
 import sys
 sys.path.append("..")
-from ..tokenization import WordTokenizer
+from tokenization import WordTokenizer
 
 class BaseEncoder(nn.Module):
 
