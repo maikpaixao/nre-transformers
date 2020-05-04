@@ -1,12 +1,12 @@
 import setuptools
 with open("README.md", "r") as fh:
     setuptools.setup(
-        name='opennre',  
+        name='openlis',  
         version='0.1',
         author="Tianyu Gao",
         author_email="gaotianyu1350@126.com",
         description="An open source toolkit for relation extraction",
-        url="https://github.com/thunlp/opennre",
+        url="https://github.com/maikpaixao/openlis",
         packages=setuptools.find_packages(),
         classifiers=[
             "Programming Language :: Python :: 3",
