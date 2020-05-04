@@ -3,7 +3,7 @@ import torch
 import numpy as np
 import json
 import opennre
-from opennre import encoder, model, framework
+from openlis import encoder, model, framework
 
 ckpt = 'ckpt/semeval_cnn_softmax.pth.tar'
 wordi2d = json.load(open('../pretrain/glove/glove.6B.50d_word2id.json'))
