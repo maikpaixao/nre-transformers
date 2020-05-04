@@ -1,0 +1,6 @@
+/log/*
+/tf_board/*/
+/.circleci/*
+/test/*
+/benchmark/*
+/pretrain/*
