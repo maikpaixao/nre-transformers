@@ -7,9 +7,9 @@ from opennre import encoder, model, framework
 from encoder import cnn_encoder
 
 ckpt = 'ckpt/semeval_cnn_softmax.pth.tar'
-wordi2d = json.load(open('pretrain/glove/glove.6B.50d_word2id.json'))
-word2vec = np.load('pretrain/glove/glove.6B.50d_mat.npy')
-rel2id = json.load(open('benchmark/semeval/semeval_rel2id.json'))
+wordi2d = json.load(open('../pretrain/glove/glove.6B.50d_word2id.json'))
+word2vec = np.load('../pretrain/glove/glove.6B.50d_mat.npy')
+rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 sentence_encoder = cnn_encoder.WEEncoder(token2id=wordi2d,
                                              max_length=100,
                                              word_size=50,
@@ -22,9 +22,9 @@ sentence_encoder = cnn_encoder.WEEncoder(token2id=wordi2d,
                                              dropout=0.5)
 model = opennre.model.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
 framework = opennre.framework.SentenceRE(
-    train_path='benchmark/semeval/semeval_train.txt',
-    val_path='benchmark/semeval/semeval_val.txt',
-    test_path='benchmark/semeval/semeval_test.txt',
+    train_path='../benchmark/semeval/semeval_train.txt',
+    val_path='../benchmark/semeval/semeval_val.txt',
+    test_path='../benchmark/semeval/semeval_test.txt',
     model=model,
     ckpt=ckpt,
     batch_size=32,
