@@ -19,7 +19,7 @@ framework = opennre.framework.SentenceRE(
     batch_size=64,
     max_epoch=10,
     lr=3e-5,
-    opt='bert_adam')
+    opt='adam')
 
 # Train
 framework.train_model(metric='micro_f1')
