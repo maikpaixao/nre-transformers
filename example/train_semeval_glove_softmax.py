@@ -6,12 +6,13 @@ import numpy as np
 import json
 import opennre
 from opennre import encoder, model, framework
+from encoder import base_encoder
 
 ckpt = 'ckpt/semeval_cnn_softmax.pth.tar'
 wordi2d = json.load(open('../pretrain/glove/glove.6B.50d_word2id.json'))
 word2vec = np.load('../pretrain/glove/glove.6B.50d_mat.npy')
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
-sentence_encoder = opennre.encoder.GloveEncoder(token2id=wordi2d,
+sentence_encoder = base_encoder.GloveEncoder(token2id=wordi2d,
                                              max_length=100,
                                              word_size=50,
                                              position_size=5,
