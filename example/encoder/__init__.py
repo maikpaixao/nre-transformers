@@ -5,10 +5,13 @@ from __future__ import print_function
 from .cnn_encoder import CNNEncoder
 from .pcnn_encoder import PCNNEncoder
 from .bert_encoder import BERTEncoder, BERTEntityEncoder
+from .base_encoder import BaseEncoder, GloveEncoder
 
 __all__ = [
     'CNNEncoder',
     'PCNNEncoder',
+    'BaseEncoder',
+    'GloveEncoder',
     'BERTEncoder',
     'BERTEntityEncoder'
 ]
