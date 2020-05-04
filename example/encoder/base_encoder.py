@@ -218,6 +218,7 @@ class GloveEncoder(nn.Module):
         self.pos1_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
+        self.linear = nn.Linear(self.hidden_size, self.hidden_size)
 
     def forward(self, token):
         """
