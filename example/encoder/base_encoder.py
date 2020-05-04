@@ -203,7 +203,7 @@ class GloveEncoder(nn.Module):
             self.num_token += 1
 
         # Word embedding
-        self.word_embedding = nn.Embedding(64, 50)
+        self.word_embedding = nn.Embedding(self.num_token, 50)
         if word2vec is not None:
             logging.info("Initializing word embedding with word2vec.")
             word2vec = torch.from_numpy(word2vec)
@@ -218,7 +218,7 @@ class GloveEncoder(nn.Module):
         self.pos1_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
-        #self.linear = nn.Linear(6400, self.hidden_size*2)
+        self.linear = nn.Linear(64, self.hidden_size)
 
     def forward(self, token):
         """
@@ -231,9 +231,7 @@ class GloveEncoder(nn.Module):
         """
         # Check size of tensors
         x = self.word_embedding(token)
-        print(x.shape)
-        print(x.shape)
-        print(x.shape)
+        x = x.linear(x)
         return x
 
     def tokenize(self, item):
