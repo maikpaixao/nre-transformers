@@ -191,7 +191,7 @@ class GloveEncoder(nn.Module):
             self.word_size = word2vec.shape[-1]
 
         self.position_size = position_size
-        self.hidden_size = 50
+        self.hidden_size = hidden_size
         self.input_size = word_size + position_size * 2
         self.blank_padding = blank_padding
 
@@ -203,7 +203,7 @@ class GloveEncoder(nn.Module):
             self.num_token += 1
 
         # Word embedding
-        self.word_embedding = nn.Embedding(self.num_token, 50)
+        self.word_embedding = nn.Embedding(self.num_token, self.word_size)
         if word2vec is not None:
             logging.info("Initializing word embedding with word2vec.")
             word2vec = torch.from_numpy(word2vec)
@@ -229,8 +229,7 @@ class GloveEncoder(nn.Module):
             (B, H), representations for sentences
         """
         # Check size of tensors
-        x = self.word_embedding(token).squeeze(-1)
-        return x
+        pass
 
     def tokenize(self, item):
         """
