@@ -219,7 +219,7 @@ class GloveEncoder(nn.Module):
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
 
-    def forward(self, token, pos1, pos2):
+    def forward(self, token):
         """
         Args:
             token: (B, L), index of tokens
@@ -229,12 +229,7 @@ class GloveEncoder(nn.Module):
             (B, H), representations for sentences
         """
         # Check size of tensors
-        if len(token.size()) != 2 or token.size() != pos1.size() or token.size() != pos2.size():
-            raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
-        x = torch.cat([self.word_embedding(token), 
-                       self.pos1_embedding(pos1), 
-                       self.pos2_embedding(pos2)], 2) # (B, L, EMBED)
-        x = x.transpose(1, 2) # (B, EMBED, L)
+        x = self.word_embedding(token)
         return x
 
     def tokenize(self, item):
