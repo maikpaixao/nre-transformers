@@ -229,7 +229,13 @@ class GloveEncoder(nn.Module):
             (B, H), representations for sentences
         """
         # Check size of tensors
-        pass
+        if len(token.size()) != 2 or token.size() != pos1.size() or token.size() != pos2.size():
+            raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
+        x = torch.cat([self.word_embedding(token), 
+                       self.pos1_embedding(pos1), 
+                       self.pos2_embedding(pos2)], 2) # (B, L, EMBED)
+        x = x.transpose(1, 2) # (B, EMBED, L)
+        return x
 
     def tokenize(self, item):
         """
