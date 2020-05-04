@@ -1,10 +1,12 @@
 # coding:utf-8
 import torch
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath('base_encoder'))))
 import numpy as np
 import json
 import opennre
 from opennre import encoder, model, framework
-from .opennre.encoder import base_encoder.GloveEncoder
+from opennre.encoder import base_encoder.GloveEncoder
 
 ckpt = 'ckpt/semeval_cnn_softmax.pth.tar'
 wordi2d = json.load(open('../pretrain/glove/glove.6B.50d_word2id.json'))
