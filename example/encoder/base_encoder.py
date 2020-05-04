@@ -229,7 +229,7 @@ class GloveEncoder(nn.Module):
             (B, H), representations for sentences
         """
         # Check size of tensors
-        x = self.word_embedding(token)
+        x = self.word_embedding(token).squeeze(-1)
         return x
 
     def tokenize(self, item):
