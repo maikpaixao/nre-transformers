@@ -9,15 +9,15 @@ from .base_encoder import GloveEncoder
 
 class CNNEncoder(BaseEncoder):
 
-    def __init__(self, 
-                 token2id, 
-                 max_length=128, 
-                 hidden_size=230, 
+    def __init__(self,
+                 token2id,
+                 max_length=128,
+                 hidden_size=230,
                  word_size=50,
                  position_size=5,
                  blank_padding=True,
                  word2vec=None,
-                 kernel_size=3, 
+                 kernel_size=3,
                  padding_size=1,
                  dropout=0,
                  activation_function=F.relu,
@@ -56,8 +56,8 @@ class CNNEncoder(BaseEncoder):
         # Check size of tensors
         if len(token.size()) != 2 or token.size() != pos1.size() or token.size() != pos2.size():
             raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
-        x = torch.cat([self.word_embedding(token), 
-                       self.pos1_embedding(pos1), 
+        x = torch.cat([self.word_embedding(token),
+                       self.pos1_embedding(pos1),
                        self.pos2_embedding(pos2)], 2) # (B, L, EMBED)
         x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x)) # (B, H, L)
@@ -67,18 +67,18 @@ class CNNEncoder(BaseEncoder):
 
     def tokenize(self, item):
         return super().tokenize(item)
-   
-class GloveEncoder(GloveEncoder):
 
-    def __init__(self, 
-                 token2id, 
-                 max_length=128, 
-                 hidden_size=230, 
+class WEEncoder(GloveEncoder):
+
+    def __init__(self,
+                 token2id,
+                 max_length=128,
+                 hidden_size=230,
                  word_size=50,
                  position_size=5,
                  blank_padding=True,
                  word2vec=None,
-                 kernel_size=3, 
+                 kernel_size=3,
                  padding_size=1,
                  dropout=0,
                  activation_function=F.relu,
@@ -122,4 +122,3 @@ class GloveEncoder(GloveEncoder):
 
     def tokenize(self, item):
         return super().tokenize(item)
-
