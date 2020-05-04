@@ -231,6 +231,9 @@ class GloveEncoder(nn.Module):
         """
         # Check size of tensors
         x = self.word_embedding(token)
+        print(x.shape)
+        print(x.shape)
+        print(x.shape)
         return x
 
     def tokenize(self, item):
