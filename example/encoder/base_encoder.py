@@ -203,7 +203,7 @@ class GloveEncoder(nn.Module):
             self.num_token += 1
 
         # Word embedding
-        self.word_embedding = nn.Embedding(self.num_token, self.word_size)
+        self.word_embedding = nn.Embedding(self.num_token, self.word_size, padding_idx=0)
         if word2vec is not None:
             logging.info("Initializing word embedding with word2vec.")
             word2vec = torch.from_numpy(word2vec)
