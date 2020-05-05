@@ -32,7 +32,7 @@ framework = opennre.framework.SentenceRE(
     lr=0.1,
     weight_decay=1e-5,
     opt='adam')
-# Train
+# Trains
 framework.train_model(metric='micro_f1')
 # Test
 framework.load_state_dict(torch.load(ckpt)['state_dict'])
