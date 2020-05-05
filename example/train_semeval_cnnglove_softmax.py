@@ -13,7 +13,7 @@ rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 sentence_encoder = cnn_encoder.WEEncoder(token2id=wordi2d,
                                              max_length=100,
                                              word_size=50,
-                                             position_size=5,
+                                             position_size=0,
                                              hidden_size=230,
                                              blank_padding=True,
                                              kernel_size=3,
@@ -31,7 +31,7 @@ framework = opennre.framework.SentenceRE(
     max_epoch=100,
     lr=0.1,
     weight_decay=1e-5,
-    opt='sgd')
+    opt='adam')
 # Train
 framework.train_model(metric='micro_f1')
 # Test
