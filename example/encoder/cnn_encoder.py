@@ -120,8 +120,8 @@ class WEEncoder(GloveEncoder):
         """
         x = self.word_embedding(token) # (B, L, EMBED)
         #x = x.transpose(1, 2)
-        x = self.act(self.conv(x)) # (B, H, L)
-        x = self.pool(x).squeeze(1)
+        x = self.act(self.conv(x).squeeze(3)) # (B, H, L)
+        x = self.pool(x).squeeze(-1)
         x = self.drop(x)
         return x
 
