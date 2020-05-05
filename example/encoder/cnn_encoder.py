@@ -82,7 +82,7 @@ class WEEncoder(GloveEncoder):
                  position_size=0,
                  blank_padding=True,
                  word2vec=None,
-                 kernel_size=3,
+                 kernel_size=1,
                  padding_size=1,
                  dropout=0,
                  activation_function=F.relu,
@@ -118,7 +118,7 @@ class WEEncoder(GloveEncoder):
         Return:
             (B, EMBED), representations for sentences
         """
-        x = [self.word_embedding(token)] # (B, L, EMBED)
+        x = self.word_embedding(token) # (B, L, EMBED)
         #x = x.transpose(1, 2)
         x = self.act(self.conv(x)) # (B, H, L)
         x = self.pool(x).squeeze(-1)
