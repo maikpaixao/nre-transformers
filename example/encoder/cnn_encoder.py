@@ -118,7 +118,8 @@ class WEEncoder(GloveEncoder):
         Return:
             (B, EMBED), representations for sentences
         """
-        x = self.word_embedding(token)
+        x = torch.cat([self.word_embedding(token)], 2) # (B, L, EMBED)
+        x = x.transpose(1, 2)
         x = self.act(self.conv(x)) # (B, H, L)
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
