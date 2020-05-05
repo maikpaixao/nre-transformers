@@ -100,7 +100,7 @@ class WEEncoder(GloveEncoder):
             padding_size: padding_size for CNN
         """
         # Hyperparameters
-        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        super(WEEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
