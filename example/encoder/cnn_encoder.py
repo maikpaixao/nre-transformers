@@ -155,11 +155,11 @@ class SCNNEncoder(BaseEncoder):
 
     def forward(self, token):
         # Check size of tensors
-        x = self.word_embedding(token).unsqueeze(2)
+        x = self.word_embedding(token).unsqueeze(1)
         print(x.shape)
         x = self.act(self.conv(x)) # (B, H, L)
         print(x.shape)
-        #x = self.pool(x).squeeze(-1)
+        x = self.pool(x).squeeze(-1)
         #x2 = self.pool(x).squeeze(0)
         #x3 = self.pool(x).squeeze(1)
         #print(x.shape, x2.shape, x3.shape)
