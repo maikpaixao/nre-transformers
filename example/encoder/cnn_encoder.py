@@ -151,7 +151,7 @@ class SCNNEncoder(BaseEncoder):
         self.act = activation_function
 
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
-        self.pool = nn.MaxPool1d(self.max_length)
+        self.pool = nn.MaxPool1d(self.max_length, padding=1)
 
     def forward(self, token):
         # Check size of tensors
