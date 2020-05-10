@@ -144,18 +144,18 @@ class SCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(SCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        super(SCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
         self.act = activation_function
 
-        self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
+        self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding = self.padding_size)
         self.pool = nn.MaxPool1d(self.max_length)
 
     def forward(self, token):
         # Check size of tensors
-        x = self.word_embedding(token).unsqueeze(3)
+        x = self.word_embedding(token).unsqueeze(2)
         x = self.act(self.conv(x)) # (B, H, L)
         x = self.pool(x)#.squeeze(0)
         x = self.drop(x)
