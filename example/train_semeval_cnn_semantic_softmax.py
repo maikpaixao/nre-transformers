@@ -17,7 +17,7 @@ sentence_encoder = cnn_encoder.SCNNEncoder(token2id=wordi2d,
                                              hidden_size=230,
                                              blank_padding=True,
                                              kernel_size=1,
-                                             padding_size=0,
+                                             padding_size=1,
                                              word2vec=word2vec,
                                              dropout=0.5)
 model = opennre.model.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
