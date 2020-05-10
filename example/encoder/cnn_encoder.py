@@ -173,6 +173,6 @@ class SCNNEncoder(BaseEncoder):
         if self.blank_padding:
             indexed_tokens = indexed_tokens[:self.max_length]
 
-        indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
+        indexed_tokens = torch.tensor(indexed_tokens).long()#.unsqueeze(0) # (1, L)
 
         return indexed_tokens
