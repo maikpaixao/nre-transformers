@@ -159,10 +159,10 @@ class SCNNEncoder(BaseEncoder):
         print(x.shape)
         x = self.act(self.conv(x)) # (B, H, L)
         print(x.shape)
-        x = self.pool(x).squeeze(-1)
-        x2 = self.pool(x).squeeze(0)
-        x3 = self.pool(x).squeeze(1)
-        print(x.shape, x2.shape, x3.shape)
+        #x = self.pool(x).squeeze(-1)
+        #x2 = self.pool(x).squeeze(0)
+        #x3 = self.pool(x).squeeze(1)
+        #print(x.shape, x2.shape, x3.shape)
         x = self.drop(x)
         return x
 
