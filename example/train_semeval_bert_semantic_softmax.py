@@ -8,12 +8,15 @@ from opennre import encoder, model, framework
 ckpt = 'ckpt/semeval_bert_softmax.pth.tar'
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 sentence_encoder = opennre.encoder.BERTEncoder(
-    max_length=80, pretrain_path='../pretrain/bert-base-uncased')
+    max_length=80, pretrain_path='../pretrain/bert-base-uncased', semantic_features = True)
 model = opennre.model.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
 framework = opennre.framework.SentenceRE(
-    train_path='../benchmark/semeval/semantics/train.txt',
-    val_path='../benchmark/semeval/semantics/val.txt',
-    test_path='../benchmark/semeval/semantics/test.txt',
+    train_path='../benchmark/semeval/semeval_train.txt',
+    val_path='../benchmark/semeval/semeval_val.txt',
+    test_path='../benchmark/semeval/semeval_test.txt',
+    #train_path='../benchmark/semeval/semantics/train.txt',
+    #val_path='../benchmark/semeval/semantics/val.txt',
+    #test_path='../benchmark/semeval/semantics/test.txt',
     model=model,
     ckpt=ckpt,
     batch_size=64,
