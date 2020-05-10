@@ -170,8 +170,8 @@ class SCNNEncoder(BaseEncoder):
         else:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
 
-        #if self.blank_padding:
-        #    indexed_tokens = indexed_tokens[:self.max_length]
+        if self.blank_padding:
+            indexed_tokens = indexed_tokens[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
 
