@@ -1,11 +1,12 @@
 import logging
 import torch
 import torch.nn as nn
+import pickle
 from transformers import BertModel, BertTokenizer
 from .base_encoder import BaseEncoder
 
 class BERTEncoder(nn.Module):
-    def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
+    def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False, path=False):
         """
         Args:
             max_length: max length of sentence
@@ -16,6 +17,11 @@ class BERTEncoder(nn.Module):
         self.blank_padding = blank_padding
         self.hidden_size = 768
         self.mask_entity = mask_entity
+        self.path = []
+        
+        _file = open('path/embeddings', 'wb') 
+        if path == True:
+            self.path = _file
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
