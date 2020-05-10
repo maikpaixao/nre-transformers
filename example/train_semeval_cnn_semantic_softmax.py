@@ -16,7 +16,7 @@ sentence_encoder = cnn_encoder.SCNNEncoder(token2id=wordi2d,
                                              position_size=0,
                                              hidden_size=100,
                                              blank_padding=True,
-                                             kernel_size=1,
+                                             kernel_size=3,
                                              padding_size=1,
                                              word2vec=word2vec,
                                              dropout=0.5)
