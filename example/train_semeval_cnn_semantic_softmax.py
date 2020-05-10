@@ -12,9 +12,9 @@ word2vec = np.load('../pretrain/glove/glove.6B.50d_mat.npy')
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 sentence_encoder = cnn_encoder.SCNNEncoder(token2id=wordi2d,
                                              max_length=100,
-                                             word_size=50,
+                                             word_size=8,
                                              position_size=0,
-                                             hidden_size=230,
+                                             hidden_size=10,
                                              blank_padding=True,
                                              kernel_size=1,
                                              padding_size=1,
