@@ -149,19 +149,14 @@ class SCNNEncoder(BaseEncoder):
         self.kernel_size = kernel_size
         self.padding_size = padding_size
         self.act = activation_function
-	self.linear = nn.Linear(self.hidden_size, self.hidden_size)
-
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=1)
-        self.pool = nn.AvgPool1d(self.max_length)
+        self.pool = nn.AvgPool1d(self.kernel_size)
 
     def forward(self, token):
         # Check size of tensors
-        x = self.word_embedding(token)#.unsqueeze(2)
-	 x = self.linear(x)
-        print(x.shape)
-        x = self.act(self.conv(x)).squeeze(2) # (B, H, L) (230, 1)
-        print(x.shape)
-        x = self.pool(x)#.squeeze(-1)
+        x = self.word_embedding(token).unsqueeze(2)
+        x = self.act(self.conv(x)) # (B, H, L) (230, 1)
+        x = self.pool(x).squeeze(-1)
         x = self.drop(x)
         return x
 
