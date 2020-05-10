@@ -163,7 +163,7 @@ class SCNNEncoder(BaseEncoder):
 
     def tokenize(self, item):
         sentence = item['token']
-	    tokens = sentence
+        tokens = sentence
 
         if self.blank_padding:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
