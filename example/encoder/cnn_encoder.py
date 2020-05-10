@@ -144,7 +144,7 @@ class SCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(SCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, blank_padding, word2vec, mask_entity=mask_entity)
+        super(SCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -170,8 +170,8 @@ class SCNNEncoder(BaseEncoder):
         else:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
 
-        if self.blank_padding:
-            indexed_tokens = indexed_tokens[:self.max_length]
+        #if self.blank_padding:
+        #    indexed_tokens = indexed_tokens[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
 

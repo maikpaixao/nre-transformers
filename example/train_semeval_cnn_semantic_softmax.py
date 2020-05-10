@@ -13,6 +13,7 @@ rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 sentence_encoder = cnn_encoder.SCNNEncoder(token2id=wordi2d,
                                              max_length=100,
                                              word_size=50,
+                                             position_size=0,
                                              hidden_size=230,
                                              blank_padding=True,
                                              kernel_size=3,
