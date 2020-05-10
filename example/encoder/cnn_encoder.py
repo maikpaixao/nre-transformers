@@ -155,7 +155,7 @@ class SCNNEncoder(BaseEncoder):
 
     def forward(self, token):
         # Check size of tensors
-        x = self.word_embedding(token).unsqueeze(2)
+        x = self.word_embedding(token).unsqueeze(3)
         x = self.act(self.conv(x)) # (B, H, L)
         x = self.pool(x)#.squeeze(0)
         x = self.drop(x)
@@ -173,6 +173,6 @@ class SCNNEncoder(BaseEncoder):
         if self.blank_padding:
             indexed_tokens = indexed_tokens[:self.max_length]
 
-        indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(-1) # (1, L)
+        indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
 
         return indexed_tokens
