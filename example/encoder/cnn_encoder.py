@@ -157,11 +157,12 @@ class SCNNEncoder(BaseEncoder):
         # Check size of tensors
         x = self.word_embedding(token).unsqueeze(2)
         print(x.shape)
-        #x = x.transpose(2, 1)
-        #print(x.shape)
         x = self.act(self.conv(x)) # (B, H, L)
         print(x.shape)
         x = self.pool(x).squeeze(-1)
+        x2 = self.pool(x).squeeze(0)
+        x3 = self.pool(x).squeeze(1)
+        print(x.shape, x2.shape, x3.shape)
         x = self.drop(x)
         return x
 
