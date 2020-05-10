@@ -127,3 +127,50 @@ class WEEncoder(GloveEncoder):
 
     def tokenize(self, item):
         return super().tokenize(item)
+
+class SCNNEncoder(BaseEncoder):
+
+    def __init__(self,
+                 token2id,
+                 max_length=128,
+                 hidden_size=230,
+                 word_size=50,
+                 position_size=5,
+                 blank_padding=True,
+                 word2vec=None,
+                 kernel_size=3,
+                 padding_size=1,
+                 dropout=0,
+                 activation_function=F.relu,
+                 mask_entity=False):
+
+        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        self.drop = nn.Dropout(dropout)
+        self.kernel_size = kernel_size
+        self.padding_size = padding_size
+        self.act = activation_function
+
+        self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
+        self.pool = nn.MaxPool1d(self.max_length)
+
+    def forward(self, token):
+        # Check size of tensors
+        x = self.word_embedding(token)
+        x = self.act(self.conv(x)) # (B, H, L)
+        x = self.pool(x).squeeze(-1)
+        x = self.drop(x)
+        return x
+
+    def tokenize(self, item):
+        sentence = item['token']
+        if self.blank_padding:
+            indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
+        else:
+            indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
+
+        if self.blank_padding:
+            indexed_tokens = indexed_tokens[:self.max_length]
+
+        indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
+
+        return indexed_tokens
