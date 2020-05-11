@@ -64,7 +64,7 @@ class CNNEncoder(BaseEncoder):
         x = torch.cat([self.word_embedding(token),
                        self.pos1_embedding(pos1),
                        self.pos2_embedding(pos2),
-                       self.pos2_embedding(xs)], 2) # (B, L, EMBED)
+                       self.word_embedding(xs)], 2) # (B, L, EMBED)
 
         #self.word_embedding(xs),
         #self.word_embedding(ys)
