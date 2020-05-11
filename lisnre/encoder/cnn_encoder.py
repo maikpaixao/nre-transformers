@@ -58,7 +58,7 @@ class CNNEncoder(BaseEncoder):
             (B, EMBED), representations for sentences
         """
         # Check size of tensors
-        if len(token.size()) != 2 or token.size() != pos1.size() or token.size() != pos2.size() or token.size() != xs.size() or token.size() != ys.size():
+        if len(token.size()) != 2 or token.size() != pos1.size() or token.size() != pos2.size():# or token.size() != xs.size() or token.size() != ys.size():
             raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
         x = torch.cat([self.word_embedding(token),
                        self.pos1_embedding(pos1),
