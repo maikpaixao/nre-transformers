@@ -66,7 +66,7 @@ class CNNEncoder(BaseEncoder):
                        self.word_embedding(xs),
                        self.word_embedding(ys)], 2) # (B, L, EMBED)
         print(x.shape)
-        x = x.transpose(0, 1) # (B, EMBED, L)
+        x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x)) # (B, H, L)
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
