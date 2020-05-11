@@ -8,6 +8,5 @@ from .lstm import LSTM
 
 __all__ = [
     'CNN',
-    'RNN',
     'LSTM',
 ]
