@@ -62,9 +62,9 @@ class CNNEncoder(BaseEncoder):
             raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
         x = torch.cat([self.word_embedding(token),
                        self.pos1_embedding(pos1),
-                       self.pos2_embedding(pos2),
-                       self.word_embedding(xs),
-                       self.word_embedding(ys)], 2) # (B, L, EMBED)
+                       self.pos2_embedding(pos2)], 2) # (B, L, EMBED)
+
+        
         print(x.shape)
         x = x.transpose(2, 3) # (B, EMBED, L)
         x = self.act(self.conv(x)) # (B, H, L)
