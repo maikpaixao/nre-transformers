@@ -8,8 +8,8 @@ from .base_encoder import GloveEncoder
 import sys
 sys.path.append("..")
 
-from module.nn import CNN
-from module.pool import MaxPool
+from ..module.nn.cnn import CNN
+from ..module.pool.max_pool import MaxPool
 
 class CNNEncoder(BaseEncoder):
 

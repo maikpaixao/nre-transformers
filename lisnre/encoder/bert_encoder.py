@@ -294,10 +294,13 @@ class PATHBERTEncoder(nn.Module):
         # Get entity start hidden state
         onehot_head = torch.zeros(hidden.size()[:2]).float().to(hidden.device)  # (B, L)
         onehot_tail = torch.zeros(hidden.size()[:2]).float().to(hidden.device)  # (B, L)
+
         onehot_head = onehot_head.scatter_(1, pos1, 1)
         onehot_tail = onehot_tail.scatter_(1, pos2, 1)
+
         head_hidden = (onehot_head.unsqueeze(2) * hidden).sum(1)  # (B, H)
         tail_hidden = (onehot_tail.unsqueeze(2) * hidden).sum(1)  # (B, H)
+
         x = torch.cat([head_hidden, tail_hidden], 1)  # (B, 2H)
         x = self.linear(x)
         return x
