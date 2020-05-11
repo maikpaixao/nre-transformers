@@ -22,9 +22,12 @@ sentence_encoder = opennre.encoder.CNNEncoder(token2id=wordi2d,
                                              dropout=0.5)
 model = opennre.model.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
 framework = opennre.framework.SentenceRE(
-    train_path='../benchmark/semeval/semeval_train.txt',
-    val_path='../benchmark/semeval/semeval_val.txt',
-    test_path='../benchmark/semeval/semeval_test.txt',
+    train_path='../benchmark/semeval/semantics/train.txt',
+    val_path='../benchmark/semeval/semantics/val.txt',
+    test_path='../benchmark/semeval/semantics/test.txt',
+    #train_path='../benchmark/semeval/semeval_train.txt',
+    #val_path='../benchmark/semeval/semeval_val.txt',
+    #test_path='../benchmark/semeval/semeval_test.txt',
     model=model,
     ckpt=ckpt,
     batch_size=32,
