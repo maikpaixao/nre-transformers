@@ -73,7 +73,7 @@ class CNNEncoder(BaseEncoder):
     def tokenize(self, item):
         return super().tokenize(item)
 
-class WEEncoder(GloveEncoder):
+class POSCNNEncoder(BaseEncoder):
 
     def __init__(self,
                  token2id,
@@ -119,11 +119,17 @@ class WEEncoder(GloveEncoder):
         Return:
             (B, EMBED), representations for sentences
         """
-        x = self.word_embedding(token).squeeze(3) # (B, L, EMBED)
-        #x = x.transpose(1, 2)
+        # Check size of tensors
+        if len(token.size()) != 2 or token.size() != pos1.size() or token.size() != pos2.size():
+            raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
+        x = torch.cat([self.word_embedding(token),
+                       self.pos1_embedding(pos1),
+                       self.pos2_embedding(pos2)], 2) # (B, L, EMBED)
+        x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x)) # (B, H, L)
-        #x = self.pool(x).squeeze(-1)
+        x = self.pool(x).squeeze(-1)
         x = self.drop(x)
+        torch.save(tensor, 'file.pt')
         return x
 
     def tokenize(self, item):

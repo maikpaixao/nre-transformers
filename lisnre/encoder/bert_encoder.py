@@ -6,7 +6,7 @@ from transformers import BertModel, BertTokenizer
 from .base_encoder import BaseEncoder
 
 class BERTEncoder(nn.Module):
-    def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False, path=False):
+    def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
         """
         Args:
             max_length: max length of sentence
@@ -17,7 +17,7 @@ class BERTEncoder(nn.Module):
         self.blank_padding = blank_padding
         self.hidden_size = 768
         self.mask_entity = mask_entity
-        
+
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
@@ -122,7 +122,7 @@ class BERTEncoder(nn.Module):
         return indexed_tokens, att_mask
 
 
-class BERTEntityEncoder(nn.Module):
+class POSBERTEncoder(nn.Module):
     def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
         """
         Args:
@@ -263,7 +263,7 @@ class BERTEntityEncoder(nn.Module):
 
         return indexed_tokens, att_mask, pos1, pos2
 
-class BERTPathEncoder(nn.Module):
+class PATHBERTEncoder(nn.Module):
     def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
         """
         Args:

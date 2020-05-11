@@ -3,7 +3,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
-from ..tokenization import WordTokenizer
+import sys
+sys.path.append("..")
+from tokenization.word_tokenizer import WordTokenizer
 
 class BaseEncoder(nn.Module):
 
@@ -201,7 +203,7 @@ class GloveEncoder(nn.Module):
             self.num_token += 1
 
         # Word embedding
-        self.word_embedding = nn.Embedding(self.num_token, self.word_size)
+        self.word_embedding = nn.Embedding(self.num_token, self.word_size, padding_idx=0)
         if word2vec is not None:
             logging.info("Initializing word embedding with word2vec.")
             word2vec = torch.from_numpy(word2vec)
@@ -217,7 +219,7 @@ class GloveEncoder(nn.Module):
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
 
-    def forward(self, token, pos1, pos2):
+    def forward(self, token):
         """
         Args:
             token: (B, L), index of tokens
@@ -277,5 +279,7 @@ class GloveEncoder(nn.Module):
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
         else:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
+
+        indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
 
         return indexed_tokens
