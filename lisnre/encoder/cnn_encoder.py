@@ -19,6 +19,7 @@ class CNNEncoder(BaseEncoder):
                  hidden_size=230,
                  word_size=50,
                  position_size=5,
+                 path_entity=50,
                  blank_padding=True,
                  word2vec=None,
                  kernel_size=3,
@@ -39,7 +40,7 @@ class CNNEncoder(BaseEncoder):
             padding_size: padding_size for CNN
         """
         # Hyperparameters
-        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -48,7 +49,7 @@ class CNNEncoder(BaseEncoder):
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
         self.pool = nn.MaxPool1d(self.max_length)
 
-    def forward(self, token, pos1, pos2):#, xs, ys):
+    def forward(self, token, pos1, pos2, xs):#, xs, ys):
         """
         Args:
             token: (B, L), index of tokens
@@ -62,11 +63,11 @@ class CNNEncoder(BaseEncoder):
             raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
         x = torch.cat([self.word_embedding(token),
                        self.pos1_embedding(pos1),
-                       self.pos2_embedding(pos2)], 2) # (B, L, EMBED)
+                       self.pos2_embedding(pos2),
+                       xs], 2) # (B, L, EMBED)
 
         #self.word_embedding(xs),
         #self.word_embedding(ys)
-        print(x.shape)
         x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x)) # (B, H, L)
         x = self.pool(x).squeeze(-1)

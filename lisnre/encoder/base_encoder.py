@@ -15,6 +15,7 @@ class BaseEncoder(nn.Module):
                  hidden_size=230,
                  word_size=50,
                  position_size=5,
+                 path_entity = 50,
                  blank_padding=True,
                  word2vec=None,
                  mask_entity=False):
@@ -36,6 +37,7 @@ class BaseEncoder(nn.Module):
         self.num_token = len(token2id)
         self.num_position = max_length * 2
         self.mask_entity = mask_entity
+        self.path_entity = path_entity
 
         if word2vec is None:
             self.word_size = word_size
@@ -44,7 +46,7 @@ class BaseEncoder(nn.Module):
 
         self.position_size = position_size
         self.hidden_size = hidden_size
-        self.input_size = word_size + position_size * 2
+        self.input_size = word_size + position_size * 2 + path_entity
         self.blank_padding = blank_padding
 
         if not '[UNK]' in self.token2id:
@@ -71,7 +73,7 @@ class BaseEncoder(nn.Module):
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
 
-    def forward(self, token, pos1, pos2):#, xs, ys):
+    def forward(self, token, pos1, pos2, xs):#, xs, ys):
         """
         Args:
             token: (B, L), index of tokens
@@ -132,7 +134,9 @@ class BaseEncoder(nn.Module):
         # Token -> index
         if self.blank_padding:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
+            xs = self.tokenizer.convert_tokens_to_ids(path_xs, self.token2id['[PAD]'], self.token2id['[UNK]'])
         else:
+            xs = self.tokenizer.convert_tokens_to_ids(path_xs, unk_id = self.token2id['[UNK]'])
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
 
         # Position -> index
@@ -144,8 +148,8 @@ class BaseEncoder(nn.Module):
             pos1.append(min(i - pos1_in_index + self.max_length, 2 * self.max_length - 1))
             pos2.append(min(i - pos2_in_index + self.max_length, 2 * self.max_length - 1))
 
-        xs = self.tokenizer.convert_tokens_to_ids(path_xs, unk_id = self.token2id['[UNK]'])
-        ys = self.tokenizer.convert_tokens_to_ids(path_ys, unk_id = self.token2id['[UNK]'])
+        #xs = self.tokenizer.convert_tokens_to_ids(path_xs, unk_id = self.token2id['[UNK]'])
+        #ys = self.tokenizer.convert_tokens_to_ids(path_ys, unk_id = self.token2id['[UNK]'])
 
         if self.blank_padding:
             while len(pos1) < self.max_length:
@@ -162,7 +166,7 @@ class BaseEncoder(nn.Module):
         pos1 = torch.tensor(pos1).long().unsqueeze(0) # (1, L)
         pos2 = torch.tensor(pos2).long().unsqueeze(0) # (1, L)
 
-        return indexed_tokens, pos1, pos2#, xs, ys
+        return indexed_tokens, pos1, pos2, xs#, xs, ys
 
 class GloveEncoder(nn.Module):
     def __init__(self,
