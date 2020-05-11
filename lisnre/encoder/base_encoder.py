@@ -144,8 +144,8 @@ class BaseEncoder(nn.Module):
             pos1.append(min(i - pos1_in_index + self.max_length, 2 * self.max_length - 1))
             pos2.append(min(i - pos2_in_index + self.max_length, 2 * self.max_length - 1))
 
-        xs = self.tokenizer.convert_tokens_to_ids(xs, unk_id = self.token2id['[UNK]'])
-        ys = self.tokenizer.convert_tokens_to_ids(ys, unk_id = self.token2id['[UNK]'])
+        xs = self.tokenizer.convert_tokens_to_ids(path_xs, unk_id = self.token2id['[UNK]'])
+        ys = self.tokenizer.convert_tokens_to_ids(path_ys, unk_id = self.token2id['[UNK]'])
 
         if self.blank_padding:
             while len(pos1) < self.max_length:
