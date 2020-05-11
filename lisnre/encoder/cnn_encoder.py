@@ -48,7 +48,7 @@ class CNNEncoder(BaseEncoder):
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
         self.pool = nn.MaxPool1d(self.max_length)
 
-    def forward(self, token, pos1, pos2):
+    def forward(self, token, pos1, pos2, xs, ys):
         """
         Args:
             token: (B, L), index of tokens
@@ -62,12 +62,13 @@ class CNNEncoder(BaseEncoder):
             raise Exception("Size of token, pos1 ans pos2 should be (B, L)")
         x = torch.cat([self.word_embedding(token),
                        self.pos1_embedding(pos1),
-                       self.pos2_embedding(pos2)], 2) # (B, L, EMBED)
+                       self.pos2_embedding(pos2),
+                       self.word_embedding(xs),
+                       self.word_embedding(ys)], 2) # (B, L, EMBED)
         x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x)) # (B, H, L)
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
-        torch.save(tensor, 'file.pt')
         return x
 
     def tokenize(self, item):

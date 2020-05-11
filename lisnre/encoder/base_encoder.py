@@ -71,7 +71,7 @@ class BaseEncoder(nn.Module):
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
 
-    def forward(self, token, pos1, pos2):
+    def forward(self, token, pos1, pos2, xs, ys):
         """
         Args:
             token: (B, L), index of tokens
@@ -99,6 +99,9 @@ class BaseEncoder(nn.Module):
             is_token = True
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
+
+        path_xs = [item['path']['xs']]
+        path_ys = [item['path']['ys']]
 
         # Sentence -> token
         if not is_token:
@@ -141,6 +144,9 @@ class BaseEncoder(nn.Module):
             pos1.append(min(i - pos1_in_index + self.max_length, 2 * self.max_length - 1))
             pos2.append(min(i - pos2_in_index + self.max_length, 2 * self.max_length - 1))
 
+        xs = self.tokenizer.convert_tokens_to_ids(xs, unk_id = self.token2id['[UNK]'])
+        ys = self.tokenizer.convert_tokens_to_ids(ys, unk_id = self.token2id['[UNK]'])
+
         if self.blank_padding:
             while len(pos1) < self.max_length:
                 pos1.append(0)
@@ -154,7 +160,7 @@ class BaseEncoder(nn.Module):
         pos1 = torch.tensor(pos1).long().unsqueeze(0) # (1, L)
         pos2 = torch.tensor(pos2).long().unsqueeze(0) # (1, L)
 
-        return indexed_tokens, pos1, pos2
+        return indexed_tokens, pos1, pos2, xs, ys
 
 class GloveEncoder(nn.Module):
     def __init__(self,
