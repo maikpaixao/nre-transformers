@@ -5,7 +5,7 @@ import json
 class SentenceRE(nn.Module):
     def __init__(self):
         super().__init__()
-    
+
     def infer(self, item):
         """
         Args:
@@ -14,19 +14,19 @@ class SentenceRE(nn.Module):
             (Name of the relation of the sentence, score)
         """
         raise NotImplementedError
-    
+
 
 class BagRE(nn.Module):
     def __init__(self):
         super().__init__()
-    
+
     def infer(self, bag):
         """
         Args:
             bag: bag of sentences with the same entity pair
                 [{
-                  'text' or 'token': ..., 
-                  'h': {'pos': [start, end], ...}, 
+                  'text' or 'token': ...,
+                  'h': {'pos': [start, end], ...},
                   't': {'pos': [start, end], ...}
                 }]
         Return:
@@ -37,14 +37,14 @@ class BagRE(nn.Module):
 class FewShotRE(nn.Module):
     def __init__(self):
         super().__init__()
-    
+
     def infer(self, support, query):
         """
         Args:
-            support: supporting set. 
-                [{'text' or 'token': ..., 
-                  'h': {'pos': [start, end], ...}, 
-                  't': {'pos': [start, end], ...}, 
+            support: supporting set.
+                [{'text' or 'token': ...,
+                  'h': {'pos': [start, end], ...},
+                  't': {'pos': [start, end], ...},
                   'relation': ...}]
             query: same format as support
         Return:
