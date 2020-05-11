@@ -100,8 +100,8 @@ class BaseEncoder(nn.Module):
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
 
-        path_xs = item['path']['xs']
-        path_ys = item['path']['ys']
+        path_xs = [item['path']['xs']]
+        path_ys = [item['path']['ys']]
 
         # Sentence -> token
         if not is_token:
