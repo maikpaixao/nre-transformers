@@ -48,7 +48,7 @@ class CNNEncoder(BaseEncoder):
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
         self.pool = nn.MaxPool1d(self.max_length)
 
-    def forward(self, token, pos1, pos2)#, xs, ys):
+    def forward(self, token, pos1, pos2):#, xs, ys):
         """
         Args:
             token: (B, L), index of tokens

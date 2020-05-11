@@ -71,7 +71,7 @@ class BaseEncoder(nn.Module):
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
 
-    def forward(self, token, pos1, pos2, xs, ys):
+    def forward(self, token, pos1, pos2):#, xs, ys):
         """
         Args:
             token: (B, L), index of tokens
