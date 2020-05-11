@@ -17,11 +17,7 @@ class BERTEncoder(nn.Module):
         self.blank_padding = blank_padding
         self.hidden_size = 768
         self.mask_entity = mask_entity
-        self.path = []
         
-        _file = open('path/embeddings', 'wb') 
-        if path == True:
-            self.path = _file
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
