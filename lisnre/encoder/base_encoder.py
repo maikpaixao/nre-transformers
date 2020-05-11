@@ -157,6 +157,7 @@ class BaseEncoder(nn.Module):
             while len(pos2) < self.max_length:
                 pos2.append(0)
             indexed_tokens = indexed_tokens[:self.max_length]
+            xs = xs[:self.max_length]
             pos1 = pos1[:self.max_length]
             pos2 = pos2[:self.max_length]
 
