@@ -160,7 +160,7 @@ class BaseEncoder(nn.Module):
             pos1 = pos1[:self.max_length]
             pos2 = pos2[:self.max_length]
 
-        #xs = torch.tensor(xs).long().unsqueeze(0)
+        xs = torch.tensor(xs).long().unsqueeze(0)
         #ys = torch.tensor(ys).long().unsqueeze(0)
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0) # (1, L)
         pos1 = torch.tensor(pos1).long().unsqueeze(0) # (1, L)
