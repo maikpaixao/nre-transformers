@@ -396,7 +396,7 @@ class SEMBERTEncoder(nn.Module):
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
         indexed_ses1 = self.tokenizer.convert_tokens_to_ids(re_tokens)
 
-        avai_len = len(indexed_tokens) + len(indexed_ses1)
+        avai_len = len(indexed_tokens)
 
         # Position
         pos1 = torch.tensor([[pos1]]).long()
@@ -406,6 +406,7 @@ class SEMBERTEncoder(nn.Module):
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
+                indexed_ses1.append(0)  # 0 is id for [PAD]
             indexed_tokens = indexed_tokens[:self.max_length]
             indexed_ses1 = indexed_ses1[:self.max_length]
 
