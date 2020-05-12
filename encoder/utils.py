@@ -1,6 +1,6 @@
 
 class Utils:
-    __init__():
+    def __init__():
         self.pos = 0
 
     def formatr(self, tokens):
