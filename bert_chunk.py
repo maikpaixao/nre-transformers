@@ -23,7 +23,7 @@ framework.train_model(metric='micro_f1')
 framework.load_state_dict(torch.load(ckpt)['state_dict'])
 result = framework.eval_model(framework.test_loader)
 
-f = open("output_bert_semantic_softmax.txt","w+")
+f = open("output_bert_chunk.txt","w+")
 f.write('Precision: {}'.format(result['micro_p']), '\n')
 f.write('Recall: {}'.format(result['micro_r']), '\n')
 f.write('F1 Score: {}'.format(result['micro_f1']), '\n')
