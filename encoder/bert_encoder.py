@@ -277,7 +277,7 @@ class SEMBERTEncoder(nn.Module):
         super().__init__()
         self.max_length = max_length
         self.blank_padding = blank_padding
-        self.hidden_size = 768*2
+        self.hidden_size = 768*3
         self.mask_entity = mask_entity
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
@@ -294,14 +294,11 @@ class SEMBERTEncoder(nn.Module):
             (B, 2H), representations for sentences
         """
 
-        _, x = self.bert(token, attention_mask=att_mask)
-        #_, ses1 = self.bert(ses1, attention_mask=att_mask)
-        #_, ses2 = self.bert(ses2, attention_mask=att_mask)
+        _, x = self.bert(token, attention_mask=att_mask[0])
+        _, ses1 = self.bert(ses1, attention_mask=att_mask[1])
+        _, ses2 = self.bert(ses2, attention_mask=att_mask[1])
 
-        semantic = torch.cat([ses1, ses2], 1)
-        _, semantic = self.bert(semantic, attention_mask=att_mask)
-
-        x = torch.cat([x, semantic], 1)  # (B, 2H)
+        x = torch.cat([x, ses1, ses2], 1)  # (B, 2H)
         return x
 
     def tokenize(self, item):
@@ -395,7 +392,8 @@ class SEMBERTEncoder(nn.Module):
         indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1))
         indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
 
-        avai_len = len(indexed_tokens)
+        tokens_len = len(indexed_tokens)
+        semantic_len = len(indexed_ses1)
 
         # Position
         pos1 = torch.tensor([[pos1]]).long()
@@ -403,28 +401,30 @@ class SEMBERTEncoder(nn.Module):
 
         # Padding
         if self.blank_padding:
-            while len(indexed_tokens) < self.max_length:
+            while len(indexed_tokens) < self.max_length or
+                    len(indexed_ses1) < self.max_length or
+                    len(indexed_ses2) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
+                indexed_ses1.append(0)
+                indexed_ses2.append(0)
             indexed_tokens = indexed_tokens[:self.max_length]
-        
-        '''
-        if self.blank_padding:
-            while len(indexed_ses1) < self.max_length:
-                indexed_ses1.append(0)  # 0 is id for [PAD]
-                indexed_ses2.append(0)  # 0 is id for [PAD]
             indexed_ses1 = indexed_ses1[:self.max_length]
             indexed_ses2 = indexed_ses2[:self.max_length]
-        '''
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)  # (1, L)
         indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)  # (1, L)
         indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)  # (1, L)
 
-        # Attention mask
-        att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
-        att_mask[0, :avai_len] = 1
+        # Attention mask tokens
+        att_mask_tokens = torch.zeros(indexed_tokens.size()).long()  # (1, L)
+        att_mask_tokens[0, :tokens_len] = 1
 
-        return indexed_tokens, att_mask, pos1, pos2, indexed_ses1, indexed_ses2
+        # Attention mask semantics
+        att_mask_semantics = torch.zeros(indexed_ses1.size()).long()  # (1, L)
+        att_mask_semantics[0, :semantic_len] = 1
+
+        return indexed_tokens, [att_mask_tokens, att_mask_semantics], pos1, pos2,
+                indexed_ses1, indexed_ses2
 
 class CHUNBERTEncoder(nn.Module):
     def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
