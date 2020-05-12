@@ -402,9 +402,10 @@ class SEMBERTEncoder(nn.Module):
         pos2 = min(self.max_length - 1, pos2)
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
+        
         indexed_ses1 = self.tokenizer.convert_tokens_to_ids(re_tokens)
 
-        avai_len = len(indexed_tokens) + len(indexed_ses1)
+        avai_len = len(indexed_tokens)
 
         # Position
         pos1 = torch.tensor([[pos1]]).long()
@@ -422,7 +423,7 @@ class SEMBERTEncoder(nn.Module):
         indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)  # (1, L)
 
         # Attention mask
-        att_mask = torch.zeros(indexed_tokens.size() + indexed_ses1.size()).long()  # (1, L)
+        att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
         att_mask[0, :avai_len] = 1
 
         return indexed_tokens, att_mask, pos1, pos2, indexed_ses1
