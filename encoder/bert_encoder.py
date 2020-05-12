@@ -277,13 +277,13 @@ class SEMBERTEncoder(nn.Module):
         super().__init__()
         self.max_length = max_length
         self.blank_padding = blank_padding
-        self.hidden_size = 768*3
+        self.hidden_size = 768*2
         self.mask_entity = mask_entity
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
 
-    def forward(self, token, att_mask, pos1, pos2, ses1, ses2):
+    def forward(self, token, att_mask, pos1, pos2, semantics):
         """
         Args:
             token: (B, L), index of tokens
@@ -295,10 +295,9 @@ class SEMBERTEncoder(nn.Module):
         """
 
         _, x = self.bert(token, attention_mask=att_mask)
-        _, ses1 = self.bert(ses1, attention_mask=att_mask)
-        _, ses2 = self.bert(ses2, attention_mask=att_mask)
+        _, semt = self.bert(semantics, attention_mask=att_mask)
 
-        x = torch.cat([x, ses1, ses2], 1)  # (B, 2H)
+        x = torch.cat([x, semt], 1)  # (B, 2H)
         return x
 
     def tokenize(self, item):
@@ -323,6 +322,8 @@ class SEMBERTEncoder(nn.Module):
 
         ses1 = item['semantics']['ses1']
         ses2 = item['semantics']['ses2']
+
+        semantic = ses1 + ses2
 
         if not is_token:
             pos_min = pos_head
@@ -388,12 +389,12 @@ class SEMBERTEncoder(nn.Module):
         pos2 = min(self.max_length - 1, pos2)
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
-        
-        indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1))
-        indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
+        indexed_semantic = self.tokenizer.convert_tokens_to_ids(utils.formatr(semantic))
+
+        #indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1))
+        #indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
 
         tokens_len = len(indexed_tokens)
-        semantic_len = len(indexed_ses1)
 
         # Position
         pos1 = torch.tensor([[pos1]]).long()
@@ -403,21 +404,19 @@ class SEMBERTEncoder(nn.Module):
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length or len(indexed_ses1) < self.max_length or len(indexed_ses2) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
-                indexed_ses1.append(0)
-                indexed_ses2.append(0)
+                indexed_semantic.append(0)
             indexed_tokens = indexed_tokens[:self.max_length]
-            indexed_ses1 = indexed_ses1[:self.max_length]
-            indexed_ses2 = indexed_ses2[:self.max_length]
+            indexed_semantic = indexed_semantic[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)  # (1, L)
-        indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)  # (1, L)
-        indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)  # (1, L)
+        indexed_semantic = torch.tensor(indexed_semantic).long().unsqueeze(0)  # (1, L)
+        #indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)  # (1, L)
 
         # Attention mask tokens
         att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
         att_mask[0, :tokens_len] = 1
 
-        return indexed_tokens, att_mask, pos1, pos2, indexed_ses1, indexed_ses2
+        return indexed_tokens, att_mask, pos1, pos2, indexed_semantic
 
 class CHUNBERTEncoder(nn.Module):
     def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
