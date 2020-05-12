@@ -4,6 +4,7 @@ import torch.nn as nn
 import pickle
 from transformers import BertModel, BertTokenizer
 from .base_encoder import BaseEncoder
+from .utils import Utils
 
 class BERTEncoder(nn.Module):
     def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
@@ -310,6 +311,8 @@ class SEMBERTEncoder(nn.Module):
         Return:
             Name of the relation of the sentence
         """
+        utils = Utils()
+
         # Sentence -> token
         if 'text' in item:
             sentence = item['text']
@@ -389,8 +392,8 @@ class SEMBERTEncoder(nn.Module):
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
         
-        indexed_ses1 = self.tokenizer.convert_tokens_to_ids(ses1)
-        indexed_ses2 = self.tokenizer.convert_tokens_to_ids(ses2)
+        indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1))
+        indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
 
         avai_len = len(indexed_tokens) + len(indexed_ses1) + len(indexed_ses2)
 
@@ -404,12 +407,14 @@ class SEMBERTEncoder(nn.Module):
                 indexed_tokens.append(0)  # 0 is id for [PAD]
             indexed_tokens = indexed_tokens[:self.max_length]
         
+        '''
         if self.blank_padding:
             while len(indexed_ses1) < self.max_length:
                 indexed_ses1.append(0)  # 0 is id for [PAD]
                 indexed_ses2.append(0)  # 0 is id for [PAD]
             indexed_ses1 = indexed_ses1[:self.max_length]
             indexed_ses2 = indexed_ses2[:self.max_length]
+        '''
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)  # (1, L)
         indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)  # (1, L)
