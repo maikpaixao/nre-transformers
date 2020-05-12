@@ -297,7 +297,7 @@ class SEMBERTEncoder(nn.Module):
         #_, ses1 = self.bert(ses1, attention_mask=att_mask)
         #_, ses2 = self.bert(ses2, attention_mask=att_mask)
 
-        semantic = torch.cat([ses1, ses2], 0)
+        semantic = torch.cat([ses1, ses2], 1)
         _, semantic = self.bert(semantic, attention_mask=att_mask)
 
         x = torch.cat([x, semantic], 1)  # (B, 2H)
@@ -415,8 +415,11 @@ class SEMBERTEncoder(nn.Module):
         indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)  # (1, L)
         indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)  # (1, L)
 
+        idx_mask = torch.cat([indexed_tokens, indexed_ses1, indexed_ses2], 1)
+
         # Attention mask
-        att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
+        #att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
+        att_mask = torch.zeros(idx_mask.size()).long()  # (1, L)
         att_mask[0, :avai_len] = 1
 
         return indexed_tokens, att_mask, pos1, pos2, indexed_ses1, indexed_ses2
