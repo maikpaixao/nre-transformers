@@ -14,7 +14,7 @@ args = ap.parse_args()
 
 def main():
     pf = open('data/'+args.prefix+'.txt', 'r+')
-    _ofile = open('output/'+args.prefix+'.txt', 'w+')
+    _ofile = open('../benchmark/semeval/'+args.prefix+'.txt', 'w+')
 
     semantic_builder = SemanticKNWL()
     chunks_builder = ChunkKNWL()
@@ -49,4 +49,4 @@ def format(dict):
     return text, h, t, entity_1, entity_2, relation
 
 if __name__ == '__main__':
-    main()    
+    main()
