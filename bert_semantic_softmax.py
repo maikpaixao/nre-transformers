@@ -7,13 +7,13 @@ from model import softmax_nn
 from framework import sentence_re
 
 ckpt = 'ckpt/semeval_bert_softmax.pth.tar'
-rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
+rel2id = json.load(open('benchmark/semeval/semeval_rel2id.json'))
 sentence_encoder = bert_encoder.BERTEncoder(
-    max_length=80, pretrain_path='../benchmark/bert-base-uncased')
+    max_length=80, pretrain_path='benchmark/bert-base-uncased')
 model = softmax_nn.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
-framework = sentence_re.SentenceRE(train_path='../benchmark/semeval/train.txt',
-                                    val_path='../benchmark/semeval/val.txt',
-                                    test_path='../benchmark/semeval/test.txt',
+framework = sentence_re.SentenceRE(train_path='benchmark/semeval/train.txt',
+                                    val_path='benchmark/semeval/val.txt',
+                                    test_path='benchmark/semeval/test.txt',
                                     model=model, ckpt=ckpt, batch_size=64,
                                     max_epoch=10, lr=3e-5, opt='adam')
 # Train
