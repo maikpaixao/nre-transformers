@@ -310,12 +310,12 @@ class SEMBERTEncoder(nn.Module):
         x = self.linear(x)
         '''
         _, x = self.bert(token, attention_mask=att_mask)
-        #_, ses1 = self.bert(ses1, attention_mask=att_mask)
+        _, ses1 = self.bert(ses1, attention_mask=att_mask)
 
         #x = torch.cat([x, ses1], 1)  # (B, 2H)
         #x = self.linear(x)
 
-        return x
+        return ses1
 
     def tokenize(self, item):
         """
