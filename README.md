@@ -6,7 +6,7 @@
 Clone the repository from our github page (don't forget to star us!)
 
 ```bash
-git clone https://github.com/thunlp/OpenNRE.git
+git clone https://gitlab.lis-lab.fr/maik.paixao/lisnre.git
 ```
 
 Then install all the requirements:
