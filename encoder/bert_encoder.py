@@ -297,7 +297,7 @@ class SEMBERTEncoder(nn.Module):
         #_, ses1 = self.bert(ses1, attention_mask=att_mask)
         #_, ses2 = self.bert(ses2, attention_mask=att_mask)
 
-        semantic = torch.cat([ses1, ses2], 1)
+        semantic = torch.cat([ses1, ses2], 0)
         _, semantic = self.bert(semantic, attention_mask=att_mask)
 
         x = torch.cat([x, semantic], 1)  # (B, 2H)
@@ -392,7 +392,7 @@ class SEMBERTEncoder(nn.Module):
         indexed_ses1 = self.tokenizer.convert_tokens_to_ids(ses1)
         indexed_ses2 = self.tokenizer.convert_tokens_to_ids(ses2)
 
-        avai_len = len(indexed_tokens)
+        avai_len = len(indexed_tokens) + len(indexed_ses1) + len(indexed_ses2)
 
         # Position
         pos1 = torch.tensor([[pos1]]).long()
@@ -402,10 +402,12 @@ class SEMBERTEncoder(nn.Module):
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
+            indexed_tokens = indexed_tokens[:self.max_length]
+        
+        if self.blank_padding:
+            while len(indexed_ses1) < self.max_length:
                 indexed_ses1.append(0)  # 0 is id for [PAD]
                 indexed_ses2.append(0)  # 0 is id for [PAD]
-
-            indexed_tokens = indexed_tokens[:self.max_length]
             indexed_ses1 = indexed_ses1[:self.max_length]
             indexed_ses2 = indexed_ses2[:self.max_length]
 
