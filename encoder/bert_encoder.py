@@ -309,11 +309,11 @@ class SEMBERTEncoder(nn.Module):
         x = torch.cat([head_hidden, tail_hidden, ses1], 1)  # (B, 2H)
         x = self.linear(x)
         '''
-        , x = self.bert(token, attention_mask=att_mask)
-        , ses1 = self.bert(ses1, attention_mask=att_mask)
+        _, x = self.bert(token, attention_mask=att_mask)
+        _, ses1 = self.bert(ses1, attention_mask=att_mask)
 
         x = torch.cat([x, ses1], 1)  # (B, 2H)
-        
+
         x = self.linear(x)
 
         return x
