@@ -276,14 +276,13 @@ class SEMBERTEncoder(nn.Module):
         super().__init__()
         self.max_length = max_length
         self.blank_padding = blank_padding
-        self.hidden_size = 768*2
+        self.hidden_size = 768 * 3
         self.mask_entity = mask_entity
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
-        #self.linear = nn.Linear(self.hidden_size, self.hidden_size)
 
-    def forward(self, token, att_mask, pos1, pos2, ses1):
+    def forward(self, token, att_mask, pos1, pos2, ses1, ses2):
         """
         Args:
             token: (B, L), index of tokens
@@ -293,28 +292,15 @@ class SEMBERTEncoder(nn.Module):
         Return:
             (B, 2H), representations for sentences
         """
-        '''
-        hidden, _ = self.bert(token, attention_mask=att_mask)
-        ses1, _ = self.bert(ses1, attention_mask=att_mask)
-        
-        onehot_head = torch.zeros(hidden.size()[:2]).float().to(hidden.device)  # (B, L)
-        onehot_tail = torch.zeros(hidden.size()[:2]).float().to(hidden.device)  # (B, L)
 
-        onehot_head = onehot_head.scatter_(1, pos1, 1)
-        onehot_tail = onehot_tail.scatter_(1, pos2, 1)
-
-        head_hidden = (onehot_head.unsqueeze(2) * hidden).sum(1)  # (B, H)
-        tail_hidden = (onehot_tail.unsqueeze(2) * hidden).sum(1)  # (B, H)
-
-        x = torch.cat([head_hidden, tail_hidden, ses1], 1)  # (B, 2H)
-        x = self.linear(x)
-        '''
         _, x = self.bert(token, attention_mask=att_mask)
-        _, ses1 = self.bert(ses1, attention_mask=att_mask)
+        #_, ses1 = self.bert(ses1, attention_mask=att_mask)
+        #_, ses2 = self.bert(ses2, attention_mask=att_mask)
 
-        x = torch.cat([x, ses1], 1)  # (B, 2H)
-        #x = self.linear(x)
+        semantic = torch.cat([ses1, ses2], 1)
+        _, semantic = self.bert(semantic, attention_mask=att_mask)
 
+        x = torch.cat([x, semantic], 1)  # (B, 2H)
         return x
 
     def tokenize(self, item):
@@ -403,7 +389,8 @@ class SEMBERTEncoder(nn.Module):
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
         
-        indexed_ses1 = self.tokenizer.convert_tokens_to_ids(re_tokens)
+        indexed_ses1 = self.tokenizer.convert_tokens_to_ids(ses1)
+        indexed_ses2 = self.tokenizer.convert_tokens_to_ids(ses2)
 
         avai_len = len(indexed_tokens)
 
@@ -416,17 +403,21 @@ class SEMBERTEncoder(nn.Module):
             while len(indexed_tokens) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
                 indexed_ses1.append(0)  # 0 is id for [PAD]
+                indexed_ses2.append(0)  # 0 is id for [PAD]
+
             indexed_tokens = indexed_tokens[:self.max_length]
             indexed_ses1 = indexed_ses1[:self.max_length]
+            indexed_ses2 = indexed_ses2[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)  # (1, L)
         indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)  # (1, L)
+        indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)  # (1, L)
 
         # Attention mask
         att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
         att_mask[0, :avai_len] = 1
 
-        return indexed_tokens, att_mask, pos1, pos2, indexed_ses1
+        return indexed_tokens, att_mask, pos1, pos2, indexed_ses1, indexed_ses2
 
 class CHUNBERTEncoder(nn.Module):
     def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
