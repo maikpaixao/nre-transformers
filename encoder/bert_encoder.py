@@ -276,7 +276,7 @@ class SEMBERTEncoder(nn.Module):
         super().__init__()
         self.max_length = max_length
         self.blank_padding = blank_padding
-        self.hidden_size = 768
+        self.hidden_size = 768*2
         self.mask_entity = mask_entity
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
@@ -312,10 +312,10 @@ class SEMBERTEncoder(nn.Module):
         _, x = self.bert(token, attention_mask=att_mask)
         _, ses1 = self.bert(ses1, attention_mask=att_mask)
 
-        #x = torch.cat([x, ses1], 1)  # (B, 2H)
+        x = torch.cat([x, ses1], 1)  # (B, 2H)
         #x = self.linear(x)
 
-        return ses1
+        return x
 
     def tokenize(self, item):
         """
