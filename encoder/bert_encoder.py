@@ -401,9 +401,7 @@ class SEMBERTEncoder(nn.Module):
 
         # Padding
         if self.blank_padding:
-            while len(indexed_tokens) < self.max_length or
-                    len(indexed_ses1) < self.max_length or
-                    len(indexed_ses2) < self.max_length:
+            while len(indexed_tokens) < self.max_length or len(indexed_ses1) < self.max_length or len(indexed_ses2) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
                 indexed_ses1.append(0)
                 indexed_ses2.append(0)
@@ -423,8 +421,7 @@ class SEMBERTEncoder(nn.Module):
         att_mask_semantics = torch.zeros(indexed_ses1.size()).long()  # (1, L)
         att_mask_semantics[0, :semantic_len] = 1
 
-        return indexed_tokens, [att_mask_tokens, att_mask_semantics], pos1, pos2,
-                indexed_ses1, indexed_ses2
+        return indexed_tokens, [att_mask_tokens, att_mask_semantics], pos1, pos2, indexed_ses1, indexed_ses2
 
 class CHUNBERTEncoder(nn.Module):
     def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False):
