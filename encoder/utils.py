@@ -1,7 +1,7 @@
 
 class Utils:
-    def __init__(pos=False):
-        self.pos = pos
+    def __init__(self):
+        self.pos = 0
 
     def formatr(self, tokens):
         re_tokens = ['[CLS]']
