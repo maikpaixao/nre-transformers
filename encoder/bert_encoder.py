@@ -402,7 +402,7 @@ class SEMBERTEncoder(nn.Module):
 
         # Padding
         if self.blank_padding:
-            while len(indexed_tokens) < self.max_length or len(indexed_ses1) < self.max_length or len(indexed_ses2) < self.max_length:
+            while len(indexed_tokens) < self.max_length or len(indexed_semantic) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
                 indexed_semantic.append(0)
             indexed_tokens = indexed_tokens[:self.max_length]
