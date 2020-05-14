@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 import sys
+from .utils import Utils
 sys.path.append("..")
 from tokenization.word_tokenizer import WordTokenizer
 
@@ -62,6 +63,8 @@ class BaseEncoder(nn.Module):
         pass
 
     def tokenize(self, item):
+        utils = utils(cnn=True)
+        
         if 'text' in item:
             sentence = item['text']
             is_token = False
@@ -105,16 +108,16 @@ class BaseEncoder(nn.Module):
         # Token -> index
         if self.blank_padding:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
-            indexed_path = self.tokenizer.convert_tokens_to_ids(path, self.token2id['[PAD]'], self.token2id['[UNK]'])
-            indexed_chunks = self.tokenizer.convert_tokens_to_ids(chunks, self.token2id['[PAD]'], self.token2id['[UNK]'])
-            indexed_ses1 = self.tokenizer.convert_tokens_to_ids(ses1, self.token2id['[PAD]'], self.token2id['[UNK]'])
-            indexed_ses2 = self.tokenizer.convert_tokens_to_ids(ses2, self.token2id['[PAD]'], self.token2id['[UNK]'])            
+            indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path), self.token2id['[PAD]'], self.token2id['[UNK]'])
+            indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks), self.token2id['[PAD]'], self.token2id['[UNK]'])
+            indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1), self.token2id['[PAD]'], self.token2id['[UNK]'])
+            indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2), self.token2id['[PAD]'], self.token2id['[UNK]'])            
         else:
             indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
-            indexed_path = self.tokenizer.convert_tokens_to_ids(path, unk_id = self.token2id['[UNK]'])
-            indexed_chunks = self.tokenizer.convert_tokens_to_ids(chunks, unk_id = self.token2id['[UNK]'])
-            indexed_ses1 = self.tokenizer.convert_tokens_to_ids(ses1, unk_id = self.token2id['[UNK]'])
-            indexed_ses2 = self.tokenizer.convert_tokens_to_ids(ses2, unk_id = self.token2id['[UNK]'])
+            indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path), unk_id = self.token2id['[UNK]'])
+            indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks), unk_id = self.token2id['[UNK]'])
+            indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1), unk_id = self.token2id['[UNK]'])
+            indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2), unk_id = self.token2id['[UNK]'])
 
         # Position -> index
         pos1 = []
