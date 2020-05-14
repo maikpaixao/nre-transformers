@@ -115,14 +115,19 @@ class POSBERTEncoder(nn.Module):
         super().__init__()
         self.max_length = max_length
         self.blank_padding = blank_padding
-        self.hidden_size = 768 * 2
+        self.hidden_size = 768 + 10
         self.mask_entity = mask_entity
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
+        
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
         self.linear = nn.Linear(self.hidden_size, self.hidden_size)
 
+        self.pos1_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
+        self.pos2_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
+
     def forward(self, token, att_mask, pos1, pos2):
+        '''
         hidden, _ = self.bert(token, attention_mask=att_mask)
         # Get entity start hidden state
         onehot_head = torch.zeros(hidden.size()[:2]).float().to(hidden.device)  # (B, L)
@@ -136,6 +141,11 @@ class POSBERTEncoder(nn.Module):
 
         x = torch.cat([head_hidden, tail_hidden], 1)  # (B, 2H)
         x = self.linear(x)
+        '''
+        _, x = self.bert(token, attention_mask=att_mask)
+        pos1 = self.pos1_embedding(pos1)
+        pos2 = self.pos2_embedding(pos2)
+        x = torch.cat([x, pos1, pos2], 1)
         return x
 
     def tokenize(self, item):
@@ -210,15 +220,31 @@ class POSBERTEncoder(nn.Module):
 
         re_tokens.append('[SEP]')
 
-        pos1 = min(self.max_length - 1, pos1)
-        pos2 = min(self.max_length - 1, pos2)
+        # Position -> index
+        pos1 = []
+        pos2 = []
+        pos1_in_index = min(pos_head[0], self.max_length)
+        pos2_in_index = min(pos_tail[0], self.max_length)
+        for i in range(len(tokens)):
+            pos1.append(min(i - pos1_in_index + self.max_length, 2 * self.max_length - 1))
+            pos2.append(min(i - pos2_in_index + self.max_length, 2 * self.max_length - 1))
+
+        if self.blank_padding:
+            while len(pos1) < self.max_length:
+                pos1.append(0)
+            while len(pos2) < self.max_length:
+                pos2.append(0)
+            pos1 = pos1[:self.max_length]
+            pos2 = pos2[:self.max_length]
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
+        pos1 = torch.tensor(pos1).long().unsqueeze(0) # (1, L)
+        pos2 = torch.tensor(pos2).long().unsqueeze(0) # (1, L)
         avai_len = len(indexed_tokens)
 
         # Position
-        pos1 = torch.tensor([[pos1]]).long()
-        pos2 = torch.tensor([[pos2]]).long()
+        #pos1 = torch.tensor([[pos1]]).long()
+        #pos2 = torch.tensor([[pos2]]).long()
 
         # Padding
         if self.blank_padding:

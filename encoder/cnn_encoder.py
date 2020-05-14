@@ -58,7 +58,7 @@ class POSCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(WEEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        super(POSCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -99,7 +99,7 @@ class PATHCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(SCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        super(PATHCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -138,7 +138,7 @@ class CHUNKCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
+        super(CHUNKCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -178,7 +178,7 @@ class SEMCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
+        super(SEMCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
