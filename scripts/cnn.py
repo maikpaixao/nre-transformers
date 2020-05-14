@@ -2,6 +2,7 @@
 import torch
 import numpy as np
 import json
+import sys
 sys.path.append("..")
 from encoder import cnn_encoder
 from model import softmax_nn
