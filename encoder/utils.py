@@ -12,6 +12,7 @@ class Utils:
                 re_tokens.append(token)
             re_tokens.append('[SEP]')
         else:
+            re_tokens = []
             for token in tokens:
                 token = str(token).lower()
                 re_tokens.append(token)
