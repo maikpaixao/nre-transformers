@@ -23,6 +23,7 @@ class CNNEncoder(BaseEncoder):
                  mask_entity=False):
 
         super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        self.input_size = 50
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -31,7 +32,9 @@ class CNNEncoder(BaseEncoder):
         self.pool = nn.MaxPool1d(self.max_length)
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
-        x = self.word_embedding(token).unsqueeze(2)
+        x = torch.cat([self.word_embedding(token), 
+                       self.pos1_embedding(pos1)], 2) # (B, L, EMBED)
+        x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x))
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
@@ -58,6 +61,7 @@ class POSCNNEncoder(BaseEncoder):
 
         super(POSCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
+        self.input_size = 50 + self.position_size*2
         self.kernel_size = kernel_size
         self.padding_size = padding_size
         self.act = activation_function
