@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from .base_encoder import BaseEncoder
-from .base_encoder import GloveEncoder
 import sys
 sys.path.append("..")
 from module.nn.cnn import CNN
