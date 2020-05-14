@@ -63,7 +63,7 @@ class BaseEncoder(nn.Module):
         pass
 
     def tokenize(self, item):
-        utils = utils(cnn=True)
+        utils = Utils(cnn=True)
         
         if 'text' in item:
             sentence = item['text']
