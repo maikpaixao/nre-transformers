@@ -1,10 +1,11 @@
 
 class Utils:
     def __init__(self, cnn=False):
+        self.cnn = cnn
         self.pos = 0
 
     def formatr(self, tokens):
-        if cnn == False:
+        if self.cnn == False:
             re_tokens = ['[CLS]']
             for token in tokens:
                 token = token.lower()
