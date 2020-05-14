@@ -103,10 +103,11 @@ class PATHCNNEncoder(BaseEncoder):
 
         super(PATHCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
+        self.input_size = 50*2
         self.kernel_size = kernel_size
         self.padding_size = padding_size
         self.act = activation_function
-        self.conv = nn.Conv1d(self.input_size*2, self.hidden_size, self.kernel_size, padding=self.padding_size)
+        self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
         self.pool = nn.MaxPool1d(self.max_length)
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
@@ -141,6 +142,7 @@ class CHUNKCNNEncoder(BaseEncoder):
 
         super(CHUNKCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
+        self.input_size = 50*2
         self.kernel_size = kernel_size
         self.padding_size = padding_size
         self.act = activation_function
@@ -180,6 +182,7 @@ class SEMCNNEncoder(BaseEncoder):
 
         super(SEMCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
+        self.input_size = 50*3
         self.kernel_size = kernel_size
         self.padding_size = padding_size
         self.act = activation_function
