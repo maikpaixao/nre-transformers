@@ -8,11 +8,11 @@ class Utils:
         if self.cnn == False:
             re_tokens = ['[CLS]']
             for token in tokens:
-                token = token.lower()
+                token = str(token).lower()
                 re_tokens.append(token)
             re_tokens.append('[SEP]')
         else:
             for token in tokens:
-                token = token.lower()
+                token = str(token).lower()
                 re_tokens.append(token)
         return re_tokens
