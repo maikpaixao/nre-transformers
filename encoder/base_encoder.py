@@ -15,7 +15,6 @@ class BaseEncoder(nn.Module):
                  hidden_size=230,
                  word_size=50,
                  position_size=5,
-                 path_entity = 50,
                  blank_padding=True,
                  word2vec=None,
                  mask_entity=False):

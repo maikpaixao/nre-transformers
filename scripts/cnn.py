@@ -15,7 +15,7 @@ word2vec = np.load('../benchmark/glove/glove.6B.50d_mat.npy')
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 
 sentence_encoder = cnn_encoder.CNNEncoder(token2id=wordi2d, max_length=100, word_size=50,
-                                            position_size=0, path_entity=50, hidden_size=230, blank_padding=True,
+                                            position_size=0, hidden_size=230, blank_padding=True,
                                             kernel_size=3, padding_size=1, word2vec=word2vec, dropout=0.5)
                                             
 model = softmax_nn.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)

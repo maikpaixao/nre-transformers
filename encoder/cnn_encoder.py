@@ -14,7 +14,6 @@ class CNNEncoder(BaseEncoder):
                  hidden_size=230,
                  word_size=50,
                  position_size=5,
-                 path_entity=50,
                  blank_padding=True,
                  word2vec=None,
                  kernel_size=3,
@@ -23,7 +22,7 @@ class CNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
+        super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -128,7 +127,6 @@ class CHUNKCNNEncoder(BaseEncoder):
                  hidden_size=230,
                  word_size=50,
                  position_size=5,
-                 path_entity=50,
                  blank_padding=True,
                  word2vec=None,
                  kernel_size=3,
@@ -137,7 +135,7 @@ class CHUNKCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(CHUNKCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
+        super(CHUNKCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
@@ -168,7 +166,6 @@ class SEMCNNEncoder(BaseEncoder):
                  hidden_size=230,
                  word_size=50,
                  position_size=5,
-                 path_entity=50,
                  blank_padding=True,
                  word2vec=None,
                  kernel_size=3,
@@ -177,7 +174,7 @@ class SEMCNNEncoder(BaseEncoder):
                  activation_function=F.relu,
                  mask_entity=False):
 
-        super(SEMCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, path_entity, blank_padding, word2vec, mask_entity=mask_entity)
+        super(SEMCNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
