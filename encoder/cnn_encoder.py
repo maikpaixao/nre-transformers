@@ -55,14 +55,14 @@ class CNNEncoder(BaseEncoder):
             x = torch.cat([x, self.word_embedding(path)], 2)
         if self.e_chunks:
             x = torch.cat([x, self.word_embedding(chunks)], 2)
-            
+        if e_semantics:
+            semantics = torch.cat([self.word_embedding(ses1), self.word_embedding(ses2)], 2)
+
         x = x.transpose(1, 2)
         x = self.act(self.conv(x))
-        #if e_semantics:
-        #    x = torch.cat([x, self.word_embedding(ses1)], 2)
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
-        return x, self.word_embedding(ses1)
+        return x, semantics
 
     def tokenize(self, item):
         return super().tokenize(item)
