@@ -49,12 +49,13 @@ class CNNEncoder(BaseEncoder):
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
         x = self.word_embedding(token)
-        if e_position:
+        if self.e_position:
             x = torch.cat([x, self.pos1_embedding(pos1), self.pos2_embedding(pos2)], 2)
-        if e_path:
+        if self.e_path:
             x = torch.cat([x, self.word_embedding(path)], 2)
-        if e_chunks:
+        if self.e_chunks:
             x = torch.cat([x, self.word_embedding(chunks)], 2)
+            
         x = x.transpose(1, 2)
         x = self.act(self.conv(x))
         #if e_semantics:
