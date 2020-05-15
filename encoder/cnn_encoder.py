@@ -66,7 +66,7 @@ class CNNEncoder(BaseEncoder):
         x = torch.cat([self.word_embedding(token), 
                        self.pos1_embedding(pos1)], 2) # (B, L, EMBED)
         '''
-        x = x.transpose(1, 2) # (B, EMBED, L)
+        #x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x))
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
