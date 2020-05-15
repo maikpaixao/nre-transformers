@@ -1,6 +1,9 @@
 import torch
 from torch import nn, optim
 from .base_model import SentenceRE
+import sys
+sys.path.append("..")
+from encoder.base_encoder import BaseEncoder
 
 class SoftmaxNN(SentenceRE):
     """
@@ -15,6 +18,8 @@ class SoftmaxNN(SentenceRE):
             id2rel: dictionary of id -> relation name mapping
         """
         super().__init__()
+        #self.base_encoder = BaseEncoder
+        #self.semantic_embedding = self.base_encoder.word_embedding()
         self.sentence_encoder = sentence_encoder
         self.num_class = num_class
         self.fc = nn.Linear(self.sentence_encoder.hidden_size, num_class)

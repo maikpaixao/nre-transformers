@@ -29,7 +29,7 @@ sentence_encoder = cnn_encoder.CNNEncoder(token2id=wordi2d, max_length=100, word
                                             e_path = args.path,
                                             e_chunks = args.chunks,
                                             e_semantics = args.semantics)
-                                            
+
 model = softmax_nn.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
 framework = sentence_re.SentenceRE(train_path='../benchmark/semeval/train.txt',
                                     val_path='../benchmark/semeval/val.txt',

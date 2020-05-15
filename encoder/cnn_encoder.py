@@ -48,34 +48,24 @@ class CNNEncoder(BaseEncoder):
             self.input_size = self.input_size + 100
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
-        x = self.word_embedding(token)#.unsqueeze(2)
-        print(x.size())
-        '''
+        x = self.word_embedding(token)
         if e_position:
-            x = torch.cat([self.word_embedding(token), 
-                       self.pos1_embedding(pos1)], 2)
+            x = torch.cat([x, self.pos1_embedding(pos1), self.pos2_embedding(pos2)], 2)
         if e_path:
-            x = torch.cat([self.word_embedding(token), 
-                       self.pos1_embedding(pos1)], 2)
+            x = torch.cat([x, self.word_embedding(path)], 2)
         if e_chunks:
-            x = torch.cat([self.word_embedding(token), 
-                       self.pos1_embedding(pos1)], 2)
-        if e_semantics:
-            x = torch.cat([self.word_embedding(token), 
-                       self.pos1_embedding(pos1)], 2)
-
-        x = torch.cat([self.word_embedding(token), 
-                       self.pos1_embedding(pos1)], 2) # (B, L, EMBED)
-        '''
-        x = x.transpose(1, 2) # (B, EMBED, L)
+            x = torch.cat([x, self.word_embedding(chunks)], 2)
+        x = x.transpose(1, 2)
         x = self.act(self.conv(x))
+        #if e_semantics:
+        #    x = torch.cat([x, self.word_embedding(ses1)], 2)
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
-        return x
+        return x, self.word_embedding(ses1)
 
     def tokenize(self, item):
         return super().tokenize(item)
-
+'''
 class POSCNNEncoder(BaseEncoder):
 
     def __init__(self,
@@ -243,3 +233,4 @@ class SEMCNNEncoder(BaseEncoder):
 ###################################################################################
 ###################### FIRST ROUND FINISHES HERE ##################################
 ###################################################################################
+'''
