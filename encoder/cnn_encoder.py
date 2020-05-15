@@ -60,6 +60,9 @@ class CNNEncoder(BaseEncoder):
             #semantics = semantics.unsqueeze()
 
         x = x.transpose(1, 2)
+
+        print(x.size())
+
         x = self.act(self.conv(x))
         x = self.pool(x).squeeze(-1)
         x = self.drop(x)
