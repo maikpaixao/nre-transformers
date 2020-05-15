@@ -25,7 +25,10 @@ rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 sentence_encoder = cnn_encoder.CNNEncoder(token2id=wordi2d, max_length=100, word_size=50,
                                             position_size=0, hidden_size=230, blank_padding=True,
                                             kernel_size=3, padding_size=1, word2vec=word2vec, dropout=0.5,
-                                            args.position, args.path, args.chunks, args.semantics)
+                                            e_position = args.position,
+                                            e_path = args.path,
+                                            e_chunks = args.chunks,
+                                            e_semantics = args.semantics)
                                             
 model = softmax_nn.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
 framework = sentence_re.SentenceRE(train_path='../benchmark/semeval/train.txt',
