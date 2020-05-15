@@ -59,5 +59,4 @@ class SoftmaxNN(SentenceRE):
 
         rep = self.drop(rep)
         logits = self.fc(rep) # (B, N)
-        semantics = self.fc(semantics)
-        return logits, semantics
+        return logits
