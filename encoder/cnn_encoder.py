@@ -20,9 +20,17 @@ class CNNEncoder(BaseEncoder):
                  padding_size=1,
                  dropout=0,
                  activation_function=F.relu,
-                 mask_entity=False):
+                 mask_entity = False,
+                 e_position = False,
+                 e_path = False,
+                 e_chunks = False,
+                 e_semantics = False):
 
         super(CNNEncoder, self).__init__(token2id, max_length, hidden_size, word_size, position_size, blank_padding, word2vec, mask_entity=mask_entity)
+        self.e_position = e_position
+        self.e_path = e_path
+        self.e_chunks = e_chunks
+        self.e_semantics = e_semantics
         self.input_size = 50
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
@@ -30,10 +38,34 @@ class CNNEncoder(BaseEncoder):
         self.act = activation_function
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
         self.pool = nn.MaxPool1d(self.max_length)
+        if e_position:
+            self.input_size = self.input_size + 10
+        if e_path:
+            self.input_size = self.input_size + 50
+        if e_chunks:
+            self.input_size = self.input_size + 50
+        if e_semantics:
+            self.input_size = self.input_size + 100
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
+        x = self.word_embedding(token).unsqueeze(1)
+        '''
+        if e_position:
+            x = torch.cat([self.word_embedding(token), 
+                       self.pos1_embedding(pos1)], 2)
+        if e_path:
+            x = torch.cat([self.word_embedding(token), 
+                       self.pos1_embedding(pos1)], 2)
+        if e_chunks:
+            x = torch.cat([self.word_embedding(token), 
+                       self.pos1_embedding(pos1)], 2)
+        if e_semantics:
+            x = torch.cat([self.word_embedding(token), 
+                       self.pos1_embedding(pos1)], 2)
+
         x = torch.cat([self.word_embedding(token), 
                        self.pos1_embedding(pos1)], 2) # (B, L, EMBED)
+        '''
         x = x.transpose(1, 2) # (B, EMBED, L)
         x = self.act(self.conv(x))
         x = self.pool(x).squeeze(-1)
