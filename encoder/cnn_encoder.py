@@ -55,7 +55,7 @@ class CNNEncoder(BaseEncoder):
             x = torch.cat([x, self.word_embedding(path)], 2)
         if self.e_chunks:
             x = torch.cat([x, self.word_embedding(chunks)], 2)
-        if e_semantics:
+        if self.e_semantics:
             semantics = torch.cat([self.word_embedding(ses1), self.word_embedding(ses2)], 2)
 
         x = x.transpose(1, 2)
