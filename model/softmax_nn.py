@@ -49,10 +49,10 @@ class SoftmaxNN(SentenceRE):
         """
         rep, semantics = self.sentence_encoder(*args)
         semantics = semantics.squeeze(-1)
-        
+
         print(rep.size())
 
-        semantics = torch.max(semantics, dim = 3)[0]
+        semantics = torch.max(semantics, dim = 2)[0]
         print(semantics.size())
 
         logits = torch.cat([rep, semantics], 1)
