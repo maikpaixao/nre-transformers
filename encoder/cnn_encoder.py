@@ -48,7 +48,7 @@ class CNNEncoder(BaseEncoder):
             self.input_size = self.input_size + 100
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
-        x = self.word_embedding(token).unsqueeze(1)
+        x = self.word_embedding(token).unsqueeze(2)
         '''
         if e_position:
             x = torch.cat([self.word_embedding(token), 
