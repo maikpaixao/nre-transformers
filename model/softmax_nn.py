@@ -47,7 +47,7 @@ class SoftmaxNN(SentenceRE):
         Return:
             logits, (B, N)
         """
-        rep = self.sentence_encoder(*args) # (B, H)
+        rep, semantics = self.sentence_encoder(*args) # (B, H)
         rep = self.drop(rep)
         logits = self.fc(rep) # (B, N)
         return logits
