@@ -9,8 +9,12 @@ from framework import sentence_re
 
 ckpt = 'ckpt/semeval_bert_softmax.pth.tar'
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
+
 sentence_encoder = bert_encoder.BERTEncoder(
-    max_length=80, pretrain_path='../benchmark/bert-base-uncased')
+            max_length=80, pretrain_path='../benchmark/bert-base-uncased',
+            e_position = args.position, e_path = args.path,
+            e_chunks = args.chunks, e_semantics = args.semantics)
+            
 model =softmax_nn.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
 framework = sentence_re.SentenceRE(train_path='../benchmark/semeval/train.txt',
                                     val_path='../benchmark/semeval/val.txt',

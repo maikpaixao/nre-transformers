@@ -23,7 +23,7 @@ class BERTEncoder(nn.Module):
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
 
-    def forward(self, token, att_mask):
+    def forward(self, token, att_mask, pos1, pos2, path, chunks, ses1, ses2):
         _, x = self.bert(token, attention_mask=att_mask)
         return x
 
@@ -35,6 +35,7 @@ class BERTEncoder(nn.Module):
         else:
             sentence = item['token']
             is_token = True
+            
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
 
