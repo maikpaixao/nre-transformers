@@ -119,12 +119,15 @@ class BERTEncoder(nn.Module):
 
         re_tokens.append('[SEP]')
 
-        pos1 = min(self.max_length - 1, pos1)
-        pos2 = min(self.max_length - 1, pos2)
-
-        # Position
-        pos1 = torch.tensor([[pos1]]).long()
-        pos2 = torch.tensor([[pos2]]).long()
+        # Position -> index
+        pos1 = []
+        pos2 = []
+        pos1_in_index = min(pos_head[0], self.max_length)
+        pos2_in_index = min(pos_tail[0], self.max_length)
+        for i in range(len(tokens)):
+            pos1.append(min(i - pos1_in_index + self.max_length, 2 * self.max_length - 1))
+            pos2.append(min(i - pos2_in_index + self.max_length, 2 * self.max_length - 1))
+        
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
         indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path))
@@ -133,6 +136,14 @@ class BERTEncoder(nn.Module):
         indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
 
         avai_len = len(indexed_tokens)
+
+        if self.blank_padding:
+            while len(pos1) < self.max_length:
+                pos1.append(0)
+            while len(pos2) < self.max_length:
+                pos2.append(0)
+            pos1 = pos1[:self.max_length]
+            pos2 = pos2[:self.max_length]
 
         # Padding
         if self.blank_padding:
@@ -153,6 +164,9 @@ class BERTEncoder(nn.Module):
         indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
         indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)
         indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)
+
+        pos1 = torch.tensor(pos1).long().unsqueeze(0) # (1, L)
+        pos2 = torch.tensor(pos2).long().unsqueeze(0) # (1, L)
 
         # Attention mask
         att_mask = torch.zeros(indexed_tokens.size()).long()
