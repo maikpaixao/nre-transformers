@@ -119,18 +119,31 @@ class BERTEncoder(nn.Module):
         indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks))
         indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1))
         indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
-        
+
         avai_len = len(indexed_tokens)
 
         # Padding
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
+                indexed_path.append(0)
+                indexed_chunks.append(0)
+                indexed_ses1.append(0)
+                indexed_ses2.append(0)
             indexed_tokens = indexed_tokens[:self.max_length]
-        indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)  # (1, L)
+            indexed_path = indexed_path[:self.max_length]
+            indexed_chunks = indexed_chunks[:self.max_length]
+            indexed_ses1 = indexed_ses1[:self.max_length]
+            indexed_ses2 = indexed_ses2[:self.max_length]
+
+        indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)
+        indexed_path = torch.tensor(indexed_path).long().unsqueeze(0)
+        indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
+        indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)
+        indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)
 
         # Attention mask
-        att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
+        att_mask = torch.zeros(indexed_tokens.size()).long()
         att_mask[0, :avai_len] = 1
 
         return indexed_tokens, att_mask#, pos1, pos2, indexed_path, indexed_chunks, indexed_ses1, indexed_ses2
