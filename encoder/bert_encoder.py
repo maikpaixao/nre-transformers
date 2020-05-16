@@ -133,8 +133,8 @@ class BERTEncoder(nn.Module):
         avai_len = len(indexed_tokens)
 
         # Position
-        pos1 = torch.tensor([[pos1]]).long()
-        pos2 = torch.tensor([[pos2]]).long()
+        pos1 = torch.tensor(pos1).long().unsqueeze(0)
+        pos2 = torch.tensor(pos2).long().unsqueeze(0)
 
         # Padding
         if self.blank_padding:
