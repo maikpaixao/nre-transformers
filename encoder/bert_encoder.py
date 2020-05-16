@@ -12,13 +12,14 @@ class BERTEncoder(nn.Module):
         super().__init__()
         self.max_length = max_length
         self.blank_padding = blank_padding
-        self.hidden_size = 768
+        self.hidden_size = 768 + 10
         self.mask_entity = mask_entity
         self.e_position = e_position
         self.e_chunks = e_chunks
         self.e_path = e_path
         self.e_semantics = e_semantics
         self.pos1_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
+        self.pos2_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
 
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
@@ -28,7 +29,7 @@ class BERTEncoder(nn.Module):
         if self.e_position:
             pos1 = self.pos1_embedding(pos1)
             pos2 = self.pos2_embedding(pos2)
-            y = torch.cat([pos1, pos2], 1)
+            y = torch.cat([pos1, pos2], 2)
         if self.e_path:
             self.input_size = self.input_size + 50
         if self.e_chunks:
@@ -36,7 +37,7 @@ class BERTEncoder(nn.Module):
         if self.e_semantics:
             self.input_size = self.input_size + 100
 
-        _, x = self.bert(x, attention_mask=att_mask)
+        _, x = self.bert(token, attention_mask=att_mask)
         _, y = self.bert(y, attention_mask=att_mask)
 
         x = torch.cat([x, y], 1)
