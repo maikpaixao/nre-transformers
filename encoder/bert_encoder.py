@@ -149,7 +149,7 @@ class BERTEncoder(nn.Module):
             indexed_semantic = indexed_semantic[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)
-        indexed_path = torch.tensor(indexed_path).long().unsqueeze(0)
+        #indexed_path = torch.tensor(indexed_path).long().unsqueeze(0)
         indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
         indexed_semantic = torch.tensor(indexed_semantic).long().unsqueeze(0)
 
