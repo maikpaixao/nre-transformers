@@ -38,7 +38,7 @@ class BERTEncoder(nn.Module):
             self.input_size = self.input_size + 100
 
         x = torch.cat([x, pos1, pos2], 1)
-        return x
+        return x, ses1. e_semantics
 
     def tokenize(self, item):
         utils = Utils()
