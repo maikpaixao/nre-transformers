@@ -107,13 +107,13 @@ class BaseEncoder(nn.Module):
 
         # Token -> index
         if self.blank_padding:
-            indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
+            indexed_tokens = self.tokenizer.convert_tokens_to_ids(utils.formatr(tokens), self.max_length, self.token2id['[PAD]'], self.token2id['[UNK]'])
             indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path), self.token2id['[PAD]'], self.token2id['[UNK]'])
             indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks), self.token2id['[PAD]'], self.token2id['[UNK]'])
             indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1), self.token2id['[PAD]'], self.token2id['[UNK]'])
             indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2), self.token2id['[PAD]'], self.token2id['[UNK]'])            
         else:
-            indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens, unk_id = self.token2id['[UNK]'])
+            indexed_tokens = self.tokenizer.convert_tokens_to_ids(utils.formatr(tokens), unk_id = self.token2id['[UNK]'])
             indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path), unk_id = self.token2id['[UNK]'])
             indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks), unk_id = self.token2id['[UNK]'])
             indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1), unk_id = self.token2id['[UNK]'])
