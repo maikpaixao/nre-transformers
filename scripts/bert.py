@@ -6,6 +6,14 @@ sys.path.append("..")
 from encoder import bert_encoder
 from model import softmax_nn
 from framework import sentence_re
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--position", help="position embeddings", action="store_true")
+parser.add_argument("--path", help="path embeddings", action="store_true")
+parser.add_argument("--chunks", help="chunks embeddings", action="store_true")
+parser.add_argument("--semantics", help="semantics embeddings", action="store_true")
+args = parser.parse_args()
 
 ckpt = 'ckpt/semeval_bert_softmax.pth.tar'
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
