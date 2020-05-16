@@ -26,7 +26,7 @@ class BERTEncoder(nn.Module):
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
 
-    def forward(self, token, att_mask, pos1, pos2, chunks, path, semantics):
+    def forward(self, token, att_mask, chunks, path, semantics):
         _, x = self.bert(token, attention_mask=att_mask)
         '''
         if self.e_position:
@@ -157,4 +157,4 @@ class BERTEncoder(nn.Module):
         att_mask = torch.zeros(indexed_tokens.size()).long()
         att_mask[0, :avai_len] = 1
 
-        return indexed_tokens, att_mask, pos1, pos2, indexed_path, indexed_chunks, indexed_semantic
+        return indexed_tokens, att_mask, indexed_path, indexed_chunks, indexed_semantic
