@@ -18,7 +18,7 @@ class BERTEncoder(nn.Module):
         self.e_chunks = e_chunks
         self.e_path = e_path
         self.e_semantics = e_semantics
-        self.pos1_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
+        self.pos1_embedding = nn.Embedding(2 * max_length, 10, padding_idx=0)
 
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
