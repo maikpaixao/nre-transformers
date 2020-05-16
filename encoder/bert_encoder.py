@@ -27,6 +27,7 @@ class BERTEncoder(nn.Module):
 
     def forward(self, token, att_mask, pos1, pos2, chunks, path, ses1, ses2):
         _, x = self.bert(token, attention_mask=att_mask)
+        '''
         if self.e_position:
             pos1 = self.pos1_embedding(pos1)
             pos2 = self.pos2_embedding(pos2)
@@ -36,7 +37,7 @@ class BERTEncoder(nn.Module):
             self.input_size = self.input_size + 50
         if self.e_semantics:
             self.input_size = self.input_size + 100
-
+        '''
         #x = torch.cat([x, pos1, pos2], 1)
         return x, ses1. e_semantics
 
