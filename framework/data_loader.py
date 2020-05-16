@@ -38,7 +38,7 @@ class SentenceREDataset(data.Dataset):
         item = self.data[index]
         seq = list(self.tokenizer(item, **self.kwargs))
         res = [self.rel2id[item['relation']]] + seq
-        return [self.rel2id[item['relation']]] + seq # label, seq1, seq2, ...
+        return [self.rel2id[item['relation']]] + seq
     
     def collate_fn(data):
         data = list(zip(*data))
