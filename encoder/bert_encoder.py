@@ -26,7 +26,7 @@ class BERTEncoder(nn.Module):
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
 
-    def forward(self, token, att_mask, pos1, pos2, path):
+    def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         _, x = self.bert(token, attention_mask=att_mask)
         '''
         if self.e_position:
@@ -142,20 +142,23 @@ class BERTEncoder(nn.Module):
                 indexed_tokens.append(0)  # 0 is id for [PAD]
             while len(indexed_path) < self.max_length:
                 indexed_path.append(0)
-                #indexed_chunks.append(0)
-                #indexed_semantic.append(0)
+            while len(indexed_chunks) < self.max_length:
+                indexed_chunks.append(0)
+            while len(indexed_semantic) < self.max_length:
+                indexed_semantic.append(0)
+
             indexed_tokens = indexed_tokens[:self.max_length]
             indexed_path = indexed_path[:self.max_length]
-            #indexed_chunks = indexed_chunks[:self.max_length]
-            #indexed_semantic = indexed_semantic[:self.max_length]
+            indexed_chunks = indexed_chunks[:self.max_length]
+            indexed_semantic = indexed_semantic[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)
         indexed_path = torch.tensor(indexed_path).long().unsqueeze(0)
-        #indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
-        #indexed_semantic = torch.tensor(indexed_semantic).long().unsqueeze(0)
+        indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
+        indexed_semantic = torch.tensor(indexed_semantic).long().unsqueeze(0)
 
         # Attention mask
         att_mask = torch.zeros(indexed_tokens.size()).long()
         att_mask[0, :avai_len] = 1
 
-        return indexed_tokens, att_mask, pos1, pos2, indexed_path
+        return indexed_tokens, att_mask, pos1, pos2, indexed_path, indexed_chunks, indexed_semantic
