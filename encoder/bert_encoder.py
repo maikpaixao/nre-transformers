@@ -8,9 +8,8 @@ from .base_encoder import BaseEncoder
 from .utils import Utils
 
 class BERTEncoder(nn.Module):
-    def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False, word2vec = None,
-                        e_position = False, e_path = False, e_chunks = False, e_semantics = False,
-                        token2id):
+    def __init__(self, token2id, max_length, pretrain_path, blank_padding=True, mask_entity=False, word2vec = None,
+                        e_position = False, e_path = False, e_chunks = False, e_semantics = False):
 
         super().__init__()
         self.max_length = max_length

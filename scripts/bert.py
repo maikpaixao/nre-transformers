@@ -22,8 +22,8 @@ word2vec = np.load('../benchmark/glove/glove.6B.50d_mat.npy')
 
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 
-sentence_encoder = bert_encoder.BERTEncoder(max_length=80, pretrain_path='../benchmark/bert-base-uncased',
-                                        word2vec = word2vec, token2id = wordi2d,
+sentence_encoder = bert_encoder.BERTEncoder(token2id = wordi2d, max_length=80,
+                                        pretrain_path='../benchmark/bert-base-uncased', word2vec=word2vec,
                                         e_position = args.position, e_path = args.path,
                                         e_chunks = args.chunks, e_semantics = args.semantics)
             
