@@ -140,8 +140,8 @@ class BERTEncoder(nn.Module):
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
-            while len(indexed_path):
-                indexed_path.append(0) < self.max_length:
+            while len(indexed_path) < self.max_length:
+                indexed_path.append(0)
                 #indexed_chunks.append(0)
                 #indexed_semantic.append(0)
             indexed_tokens = indexed_tokens[:self.max_length]
