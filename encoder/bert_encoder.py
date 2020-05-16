@@ -57,18 +57,21 @@ class BERTEncoder(nn.Module):
 
         if e_position:
             self.hidden_size = self.hidden_size + 10
-        if e_path:
+        elif e_path:
             self.hidden_size = self.hidden_size + 40
-        if e_chunks:
+        elif e_chunks:
             self.hidden_size = self.hidden_size + 50
-        if e_semantics:
+        elif e_semantics:
             self.hidden_size = self.hidden_size + 50
+        elif e_position and e_path:
+            self.hidden_size = self.hidden_size + 10 + 40
 
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         pos1 = self.pos1_embedding(pos1)
         pos2 = self.pos2_embedding(pos2)
         path = self.path_embedding(path)
         chunks = self.word_embedding(chunks)
+
         _, x = self.bert(token, attention_mask=att_mask)
 
         if self.e_position:
@@ -88,7 +91,6 @@ class BERTEncoder(nn.Module):
 
         if self.e_semantics:
             semantics = self.word_embedding(semantics)
-
         return x
 
     def tokenize(self, item):

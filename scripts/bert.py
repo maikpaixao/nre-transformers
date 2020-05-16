@@ -19,7 +19,6 @@ args = parser.parse_args()
 ckpt = 'ckpt/semeval_bert_softmax.pth.tar'
 wordi2d = json.load(open('../benchmark/glove/glove.6B.50d_word2id.json'))
 word2vec = np.load('../benchmark/glove/glove.6B.50d_mat.npy')
-
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 
 sentence_encoder = bert_encoder.BERTEncoder(token2id = wordi2d, max_length=80,
@@ -34,10 +33,7 @@ framework = sentence_re.SentenceRE(train_path='../benchmark/semeval/train.txt',
                                     model=model, ckpt=ckpt, batch_size=64,
                                     max_epoch=10, lr=3e-5, opt='adam')
 
-# Train
 framework.train_model(metric='micro_f1')
-
-# Test
 framework.load_state_dict(torch.load(ckpt)['state_dict'])
 result = framework.eval_model(framework.test_loader)
 
