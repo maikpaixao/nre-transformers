@@ -12,12 +12,13 @@ class BERTEncoder(nn.Module):
         super().__init__()
         self.max_length = max_length
         self.blank_padding = blank_padding
-        self.hidden_size = 768 + 10
+        self.hidden_size = 768
         self.mask_entity = mask_entity
         self.e_position = e_position
         self.e_chunks = e_chunks
         self.e_path = e_path
         self.e_semantics = e_semantics
+
         self.pos1_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
 
@@ -25,7 +26,7 @@ class BERTEncoder(nn.Module):
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
 
-    def forward(self, token, att_mask, pos1, pos2, chunks, path, ses1, ses2):
+    def forward(self, token, att_mask)#, pos1, pos2, chunks, path, ses1, ses2):
         _, x = self.bert(token, attention_mask=att_mask)
         '''
         if self.e_position:
@@ -39,10 +40,9 @@ class BERTEncoder(nn.Module):
             self.input_size = self.input_size + 100
         '''
         #x = torch.cat([x, pos1, pos2], 1)
-        return x, ses1. e_semantics
+        return x, 0, e_semantics
 
     def tokenize(self, item):
-        utils = Utils()
         # Sentence -> token
         if 'text' in item:
             sentence = item['text']
@@ -50,13 +50,8 @@ class BERTEncoder(nn.Module):
         else:
             sentence = item['token']
             is_token = True
-
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
-        ses1 = item['semantics']['ses1']
-        ses2 = item['semantics']['ses2']
-        chunks = item['chunks']
-        path = item['path']['embed']
 
         if not is_token:
             pos_min = pos_head
@@ -113,56 +108,18 @@ class BERTEncoder(nn.Module):
             cur_pos += 1
         re_tokens.append('[SEP]')
 
-        # Position -> index
-        pos1 = []
-        pos2 = []
-        pos1_in_index = min(pos_head[0], self.max_length)
-        pos2_in_index = min(pos_tail[0], self.max_length)
-        for i in range(len(tokens)):
-            pos1.append(min(i - pos1_in_index + self.max_length, 2 * self.max_length - 1))
-            pos2.append(min(i - pos2_in_index + self.max_length, 2 * self.max_length - 1))
-
-        if self.blank_padding:
-            while len(pos1) < self.max_length:
-                pos1.append(0)
-            while len(pos2) < self.max_length:
-                pos2.append(0)
-            pos1 = pos1[:self.max_length]
-            pos2 = pos2[:self.max_length]
-
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
-        indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1))
-        indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
-        indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks))
-        indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path))
-        
-        pos1 = torch.tensor(pos1).long().unsqueeze(0)
-        pos2 = torch.tensor(pos2).long().unsqueeze(0)
-
         avai_len = len(indexed_tokens)
 
         # Padding
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length:
                 indexed_tokens.append(0)  # 0 is id for [PAD]
-                indexed_ses1.append(0)
-                indexed_ses2.append(0)
-                indexed_chunks.append(0)
-                indexed_path.append(0)
             indexed_tokens = indexed_tokens[:self.max_length]
-            indexed_ses1 = indexed_ses1[:self.max_length]
-            indexed_ses2 = indexed_ses2[:self.max_length]
-            indexed_chunks = indexed_chunks[:self.max_length]
-            indexed_path = indexed_path[:self.max_length]
-
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)  # (1, L)
-        indexed_ses1 = torch.tensor(indexed_ses1).long().unsqueeze(0)
-        indexed_ses2 = torch.tensor(indexed_ses2).long().unsqueeze(0)
-        indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
-        indexed_path = torch.tensor(indexed_path).long().unsqueeze(0)
 
         # Attention mask
-        att_mask = torch.zeros(indexed_tokens.size()).long() 
+        att_mask = torch.zeros(indexed_tokens.size()).long()  # (1, L)
         att_mask[0, :avai_len] = 1
 
-        return indexed_tokens, att_mask, pos1, pos2, indexed_path, indexed_chunks, indexed_ses1, indexed_ses2
+        return indexed_tokens, att_mask#, pos1, pos2, indexed_path, indexed_chunks, indexed_ses1, indexed_ses2
