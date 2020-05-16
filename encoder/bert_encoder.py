@@ -26,7 +26,7 @@ class BERTEncoder(nn.Module):
 
     def forward(self, token, att_mask, pos1, pos2, chunks, path, ses1, ses2):
         if e_position:
-            x = torch.cat([token, pos1_embedding(pos2), pos1_embedding(pos2)], 2)
+            x = torch.cat([token, self.pos1_embedding(pos2), self.pos1_embedding(pos2)], 2)
         if e_path:
             self.input_size = self.input_size + 50
         if e_chunks:
