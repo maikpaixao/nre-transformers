@@ -1,4 +1,5 @@
 import logging
+import math, logging
 import torch
 import torch.nn as nn
 import pickle
@@ -7,10 +8,14 @@ from .base_encoder import BaseEncoder
 from .utils import Utils
 
 class BERTEncoder(nn.Module):
-    def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False,
-                        e_position = False, e_path = False, e_chunks = False, e_semantics = False):
+    def __init__(self, max_length, pretrain_path, blank_padding=True, mask_entity=False, word2vec = None,
+                        e_position = False, e_path = False, e_chunks = False, e_semantics = False,
+                        token2id):
+
         super().__init__()
         self.max_length = max_length
+        self.token2id = token2id
+        self.num_token = len(token2id)
         self.blank_padding = blank_padding
         self.hidden_size = 768
         self.mask_entity = mask_entity
@@ -21,6 +26,31 @@ class BERTEncoder(nn.Module):
 
         self.pos1_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
+        self.path_embedding = nn.Embedding(2 * max_length, 40, padding_idx=0)
+
+        if word2vec is None:
+            self.word_size = word_size
+        else:
+            self.word_size = word2vec.shape[-1]
+
+        if not '[UNK]' in self.token2id:
+            self.token2id['[UNK]'] = len(self.token2id)
+            self.num_token += 1
+        if not '[PAD]' in self.token2id:
+            self.token2id['[PAD]'] = len(self.token2id)
+            self.num_token += 1
+        
+        self.word_embedding = nn.Embedding(self.num_token, self.word_size)
+
+        if word2vec is not None:
+            logging.info("Initializing word embedding with word2vec.")
+            word2vec = torch.from_numpy(word2vec)
+            if self.num_token == len(word2vec) + 2:
+                unk = torch.randn(1, self.word_size) / math.sqrt(self.word_size)
+                blk = torch.zeros(1, self.word_size)
+                self.word_embedding.weight.data.copy_(torch.cat([word2vec, unk, blk], 0))
+            else:
+                self.word_embedding.weight.data.copy_(word2vec)
 
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
@@ -28,19 +58,19 @@ class BERTEncoder(nn.Module):
 
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         _, x = self.bert(token, attention_mask=att_mask)
-        '''
         if self.e_position:
             pos1 = self.pos1_embedding(pos1)
             pos2 = self.pos2_embedding(pos2)
+            x = torch.cat([x, pos1, pos2], 1)
         if self.e_path:
-            self.input_size = self.input_size + 50
+            path = self.path_embedding(path)
+            x = torch.cat([x, path], 1)
         if self.e_chunks:
-            self.input_size = self.input_size + 50
+            chunks = self.word_embedding(chunks)
+            x = torch.cat([x, chunks], 1)
         if self.e_semantics:
-            self.input_size = self.input_size + 100
-        '''
-        #x = torch.cat([x, pos1, pos2], 1)
-        return x, 0, self.e_semantics
+            semantics = self.word_embedding(semantics)
+        return x, semantics, self.e_semantics
 
     def tokenize(self, item):
         utils = Utils(cnn=False)

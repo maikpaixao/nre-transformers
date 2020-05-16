@@ -23,8 +23,10 @@ class BaseEncoder(nn.Module):
         super().__init__()
         self.token2id = token2id
         self.max_length = max_length
+
         self.num_token = len(token2id)
         self.num_position = max_length * 2
+
         self.mask_entity = mask_entity
 
         if word2vec is None:
@@ -45,6 +47,7 @@ class BaseEncoder(nn.Module):
             self.num_token += 1
 
         self.word_embedding = nn.Embedding(self.num_token, self.word_size)
+        
         if word2vec is not None:
             logging.info("Initializing word embedding with word2vec.")
             word2vec = torch.from_numpy(word2vec)

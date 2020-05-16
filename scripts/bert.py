@@ -17,12 +17,15 @@ parser.add_argument("--semantics", help="semantics embeddings", action="store_tr
 args = parser.parse_args()
 
 ckpt = 'ckpt/semeval_bert_softmax.pth.tar'
+wordi2d = json.load(open('../benchmark/glove/glove.6B.50d_word2id.json'))
+word2vec = np.load('../benchmark/glove/glove.6B.50d_mat.npy')
+
 rel2id = json.load(open('../benchmark/semeval/semeval_rel2id.json'))
 
-sentence_encoder = bert_encoder.BERTEncoder(
-            max_length=80, pretrain_path='../benchmark/bert-base-uncased',
-            e_position = args.position, e_path = args.path,
-            e_chunks = args.chunks, e_semantics = args.semantics)
+sentence_encoder = bert_encoder.BERTEncoder(max_length=80, pretrain_path='../benchmark/bert-base-uncased',
+                                        word2vec = word2vec, token2id = wordi2d,
+                                        e_position = args.position, e_path = args.path,
+                                        e_chunks = args.chunks, e_semantics = args.semantics)
             
 model =softmax_nn.SoftmaxNN(sentence_encoder, len(rel2id), rel2id)
 framework = sentence_re.SentenceRE(train_path='../benchmark/semeval/train.txt',
