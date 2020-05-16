@@ -97,22 +97,34 @@ class BERTEncoder(nn.Module):
         # Token -> index
         re_tokens = ['[CLS]']
         cur_pos = 0
+        pos1 = 0
+        pos2 = 0
         for token in tokens:
             token = token.lower()
-            if cur_pos == pos_head[0] and not self.mask_entity:
+            if cur_pos == pos_head[0]:
+                pos1 = len(re_tokens)
                 re_tokens.append('[unused0]')
-            if cur_pos == pos_tail[0] and not self.mask_entity:
+            if cur_pos == pos_tail[0]:
+                pos2 = len(re_tokens)
                 re_tokens.append('[unused1]')
             if is_token:
                 re_tokens += self.tokenizer.tokenize(token)
             else:
                 re_tokens.append(token)
-            if cur_pos == pos_head[1] - 1 and not self.mask_entity:
+            if cur_pos == pos_head[1] - 1:
                 re_tokens.append('[unused2]')
-            if cur_pos == pos_tail[1] - 1 and not self.mask_entity:
+            if cur_pos == pos_tail[1] - 1:
                 re_tokens.append('[unused3]')
             cur_pos += 1
+
         re_tokens.append('[SEP]')
+
+        pos1 = min(self.max_length - 1, pos1)
+        pos2 = min(self.max_length - 1, pos2)
+
+        # Position
+        pos1 = torch.tensor([[pos1]]).long()
+        pos2 = torch.tensor([[pos2]]).long()
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
         indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path))
