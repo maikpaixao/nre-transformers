@@ -55,6 +55,9 @@ class BERTEncoder(nn.Module):
         self.bert = BertModel.from_pretrained(pretrain_path)
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
 
+        if e_semantics:
+            self.hidden_size = self.hidden_size + 50
+
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         _, x = self.bert(token, attention_mask=att_mask)
         if self.e_position:
