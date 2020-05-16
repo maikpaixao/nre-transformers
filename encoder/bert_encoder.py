@@ -43,6 +43,7 @@ class BERTEncoder(nn.Module):
         return x, 0, self.e_semantics
 
     def tokenize(self, item):
+        utils = Utils(cnn=False)
         # Sentence -> token
         if 'text' in item:
             sentence = item['text']
@@ -50,8 +51,13 @@ class BERTEncoder(nn.Module):
         else:
             sentence = item['token']
             is_token = True
+
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
+        ses1 = item['semantics']['ses1']
+        ses2 = item['semantics']['ses2']
+        chunks = item['chunks']
+        path = item['path']['embed']
 
         if not is_token:
             pos_min = pos_head
@@ -109,6 +115,11 @@ class BERTEncoder(nn.Module):
         re_tokens.append('[SEP]')
 
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
+        indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path))
+        indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks))
+        indexed_ses1 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses1))
+        indexed_ses2 = self.tokenizer.convert_tokens_to_ids(utils.formatr(ses2))
+        
         avai_len = len(indexed_tokens)
 
         # Padding
