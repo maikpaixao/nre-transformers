@@ -29,11 +29,7 @@ class SoftmaxNN(SentenceRE):
         return self.id2rel[pred], score
     
     def forward(self, *args):
-        rep, semantics, switch = self.sentence_encoder(*args)
-        if switch:
-            semantics = semantics.squeeze(-1)
-            semantics = torch.max(semantics, dim = 2)[0]
-            rep = torch.cat([rep, semantics], 1)
+        rep = self.sentence_encoder(*args)
         rep = self.drop(rep)
         logits = self.fc(rep)
         return logits

@@ -57,29 +57,43 @@ class BERTEncoder(nn.Module):
 
         if e_position:
             self.hidden_size = self.hidden_size + 10
+        if e_path:
+            self.hidden_size = self.hidden_size + 40
+        if e_chunks:
+            self.hidden_size = self.hidden_size + 50
         if e_semantics:
             self.hidden_size = self.hidden_size + 50
 
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
-        _, x = self.bert(token, attention_mask=att_mask)
+        pos1 = self.pos1_embedding(pos1)
+        pos2 = self.pos2_embedding(pos2)
+        path = self.path_embedding(path)
+        chunks = self.word_embedding(chunks)
+        #_, x = self.bert(token, attention_mask=att_mask)
+
         if self.e_position:
-            pos1 = self.pos1_embedding(pos1)
-            pos2 = self.pos2_embedding(pos2)
             x = torch.cat([x, pos1, pos2], 1)
-        if self.e_path:
-            path = self.path_embedding(path)
+        elif self.e_path:
             x = torch.cat([x, path], 1)
-        if self.e_chunks:
-            chunks = self.word_embedding(chunks)
+        elif self.e_chunks:
             x = torch.cat([x, chunks], 1)
+        elif self.e_position and self.e_path:
+            x = torch.cat([x, pos1, pos2, path], 1)
+        elif self.e_position and self.e_chunks:
+            x = torch.cat([x, pos1, pos2, chunk], 1)
+        elif self.e_path and self.e_chunks:
+            x = torch.cat([x, path, chunks], 1)
+        elif self.e_position and self.e_path and self.e_chunks:
+            x = torch.cat([x, pos1, pos2, path, chunks], 1)
+
         if self.e_semantics:
             semantics = self.word_embedding(semantics)
 
-        return x, 0, self.e_semantics
+        return x
 
     def tokenize(self, item):
         utils = Utils(cnn=False)
-        # Sentence -> token
+        
         if 'text' in item:
             sentence = item['text']
             is_token = False
@@ -130,7 +144,6 @@ class BERTEncoder(nn.Module):
         else:
             tokens = sentence
 
-        # Token -> index
         re_tokens = ['[CLS]']
         cur_pos = 0
         pos1 = 0
@@ -155,11 +168,9 @@ class BERTEncoder(nn.Module):
 
         re_tokens.append('[SEP]')
 
-        # Position -> index
         pos1 = min(self.max_length - 1, pos1)
         pos2 = min(self.max_length - 1, pos2)
         
-
         indexed_tokens = self.tokenizer.convert_tokens_to_ids(re_tokens)
         indexed_path = self.tokenizer.convert_tokens_to_ids(utils.formatr(path))
         indexed_chunks = self.tokenizer.convert_tokens_to_ids(utils.formatr(chunks))
@@ -167,14 +178,13 @@ class BERTEncoder(nn.Module):
 
         avai_len = len(indexed_tokens)
 
-        # Position
         pos1 = torch.tensor(pos1).long().unsqueeze(0)
         pos2 = torch.tensor(pos2).long().unsqueeze(0)
 
-        # Padding
+        
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length:
-                indexed_tokens.append(0)  # 0 is id for [PAD]
+                indexed_tokens.append(0)
             while len(indexed_path) < self.max_length:
                 indexed_path.append(0)
             while len(indexed_chunks) < self.max_length:
@@ -192,7 +202,6 @@ class BERTEncoder(nn.Module):
         indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
         indexed_semantic = torch.tensor(indexed_semantic).long().unsqueeze(0)
 
-        # Attention mask
         att_mask = torch.zeros(indexed_tokens.size()).long()
         att_mask[0, :avai_len] = 1
 
