@@ -69,7 +69,7 @@ class BERTEncoder(nn.Module):
         pos2 = self.pos2_embedding(pos2)
         path = self.path_embedding(path)
         chunks = self.word_embedding(chunks)
-        #_, x = self.bert(token, attention_mask=att_mask)
+        _, x = self.bert(token, attention_mask=att_mask)
 
         if self.e_position:
             x = torch.cat([x, pos1, pos2], 1)
@@ -93,7 +93,6 @@ class BERTEncoder(nn.Module):
 
     def tokenize(self, item):
         utils = Utils(cnn=False)
-        
         if 'text' in item:
             sentence = item['text']
             is_token = False
@@ -103,9 +102,11 @@ class BERTEncoder(nn.Module):
 
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
+
         ses1 = item['semantics']['ses1']
         ses2 = item['semantics']['ses2']
         semantic = ses1 + ses2
+
         chunks = item['chunks']
         path = item['path']['embed']
 
