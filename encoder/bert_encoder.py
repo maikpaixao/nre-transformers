@@ -88,6 +88,9 @@ class BERTEncoder(nn.Module):
 
         _, x = self.bert(token, attention_mask=att_mask)
 
+        print(x.size())
+        print(path.squeeze(1).size())
+
         if self.e_position:
             x = torch.cat([x, pos1, pos2], 1)
         elif self.e_path:
