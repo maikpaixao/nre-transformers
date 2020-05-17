@@ -30,31 +30,6 @@ class BERTEncoder(nn.Module):
 
         self.pos1_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
-        self.path_embedding = nn.Embedding(2 * max_length, 50, padding_idx=0)
-
-        if word2vec is None:
-            self.word_size = word_size
-        else:
-            self.word_size = word2vec.shape[-1]
-
-        if not '[UNK]' in self.token2id:
-            self.token2id['[UNK]'] = len(self.token2id)
-            self.num_token += 1
-        if not '[PAD]' in self.token2id:
-            self.token2id['[PAD]'] = len(self.token2id)
-            self.num_token += 1
-        
-        self.word_embedding = nn.Embedding(self.num_token, self.word_size)
-
-        if word2vec is not None:
-            logging.info("Initializing word embedding with word2vec.")
-            word2vec = torch.from_numpy(word2vec)
-            if self.num_token == len(word2vec) + 2:
-                unk = torch.randn(1, self.word_size) / math.sqrt(self.word_size)
-                blk = torch.zeros(1, self.word_size)
-                self.word_embedding.weight.data.copy_(torch.cat([word2vec, unk, blk], 0))
-            else:
-                self.word_embedding.weight.data.copy_(word2vec)
 
         logging.info('Loading BERT pre-trained checkpoint.')
         self.bert = BertModel.from_pretrained(pretrain_path)
@@ -80,21 +55,14 @@ class BERTEncoder(nn.Module):
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         pos1 = self.pos1_embedding(pos1)
         pos2 = self.pos2_embedding(pos2)
-        #path = self.path_embedding(path)
-        chunks = self.word_embedding(chunks)
-
-        print(chunks.size())
-
         _, x = self.bert(token, attention_mask=att_mask)
         _, path = self.bert(path, attention_mask=att_mask)
-
-        print(x.size())
-        print(path.size())
+        _, chunks = self.bert(chunks, attention_mask=att_mask)
 
         if self.e_position:
             x = torch.cat([x, pos1, pos2], 1)
         elif self.e_path:
-            x = torch.cat([x, path], 2)
+            x = torch.cat([x, path], 1)
         elif self.e_chunks:
             x = torch.cat([x, chunks], 1)
         elif self.e_position and self.e_path:
@@ -105,27 +73,27 @@ class BERTEncoder(nn.Module):
             x = torch.cat([x, path, chunks], 1)
         elif self.e_position and self.e_path and self.e_chunks:
             x = torch.cat([x, pos1, pos2, path, chunks], 1)
-
         if self.e_semantics:
-            semantics = self.word_embedding(semantics)
+            _, semantics = self.bert(semantics, attention_mask=att_mask)
+            x = torch.cat([x, semantics], 1)
+
         return x
 
     def tokenize(self, item):
         utils = Utils(cnn=False)
+
         if 'text' in item:
             sentence = item['text']
             is_token = False
         else:
             sentence = item['token']
             is_token = True
-
+            
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
-
         ses1 = item['semantics']['ses1']
         ses2 = item['semantics']['ses2']
         semantic = ses1 + ses2
-
         chunks = item['chunks']
         path = item['path']['embed']
 

@@ -35,8 +35,9 @@ class BaseEncoder(nn.Module):
             self.word_size = word2vec.shape[-1]
 
         self.position_size = position_size
+        self.path_size = 40
         self.hidden_size = hidden_size
-        self.input_size = word_size + position_size * 2
+        self.input_size = word_size
         self.blank_padding = blank_padding
 
         if not '[UNK]' in self.token2id:
@@ -60,6 +61,7 @@ class BaseEncoder(nn.Module):
 
         self.pos1_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, self.position_size, padding_idx=0)
+        self.path_embedding = nn.Embedding(2 * max_length, self.path_size, padding_idx=0)
         self.tokenizer = WordTokenizer(vocab=self.token2id, unk_token="[UNK]")
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
