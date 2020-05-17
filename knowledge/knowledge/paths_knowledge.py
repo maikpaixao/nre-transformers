@@ -37,9 +37,7 @@ class PathsKNWL:
                     _path_wv.append(edge)
                     _cedge_pos = _cedge_pos + 1
 
-            flattened_path = [item for sublist in _path_wv for item in sublist]
-            #flattened_path = np.array(_path_wv).flatten() #flatten path
-            dict_path[c] = {'xs' : xs, 'ys' : ys, 'embed' : flattened_path}
+            dict_path[c] = {'xs' : xs, 'ys' : ys, 'embed' : _path_wv}
             c = c+1
         return dict_path
     
