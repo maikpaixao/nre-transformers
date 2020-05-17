@@ -13,7 +13,7 @@ class BERTEncoder(nn.Module):
 
         super().__init__()
         self.position_size = 10
-        self.path_size = 40
+        self.path_size = 50
         self.chunks_size = 50
         self.semantics_size = 50
 
@@ -30,7 +30,7 @@ class BERTEncoder(nn.Module):
 
         self.pos1_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
         self.pos2_embedding = nn.Embedding(2 * max_length, 5, padding_idx=0)
-        self.path_embedding = nn.Embedding(2 * max_length, 40, padding_idx=0)
+        self.path_embedding = nn.Embedding(2 * max_length, 50, padding_idx=0)
 
         if word2vec is None:
             self.word_size = word_size
@@ -80,6 +80,9 @@ class BERTEncoder(nn.Module):
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         pos1 = self.pos1_embedding(pos1)
         pos2 = self.pos2_embedding(pos2)
+
+        print(path)
+
         path = self.path_embedding(path)
         chunks = self.word_embedding(chunks)
 
