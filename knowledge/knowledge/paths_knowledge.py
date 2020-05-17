@@ -21,15 +21,22 @@ class PathsKNWL:
                 if isinstance(_edge, list):
                     if _cedge_pos == 0:
                         xs = _edge[0] #satelite lemma X
-                        edge = [0, self.dict_pos[_edge[1]], self.dict_dep[_edge[2]], self.dict_dir[_edge[3]]]
+                        edge = [0, self.dict_pos[_edge[1]], 
+                                    self.dict_dep[_edge[2]],
+                                    self.dict_dir[_edge[3]]]
                     elif _cedge_pos == (len(path) - 1):
                         ys = _edge[0] #satelite lemma Y
-                        edge = [1, self.dict_pos[_edge[1]], self.dict_dep[_edge[2]], self.dict_dir[_edge[3]]]
+                        edge = [1, self.dict_pos[_edge[1]],
+                                    self.dict_dep[_edge[2]],
+                                    self.dict_dir[_edge[3]]]
                     else:
-                        edge = [self.dict_lemma[_edge[0]], self.dict_pos[_edge[1]], self.dict_dep[_edge[2]], self.dict_dir[_edge[3]]]
-
+                        edge = [self.dict_lemma[_edge[0]],
+                                    self.dict_pos[_edge[1]],
+                                    self.dict_dep[_edge[2]],
+                                    self.dict_dir[_edge[3]]]
                     _path_wv.append(edge)
                     _cedge_pos = _cedge_pos + 1
+
             flattened_path = np.array(_path_wv).flatten().tolist()
             dict_path[c] = {'xs' : xs, 'ys' : ys, 'embed' : flattened_path}
             c = c+1
