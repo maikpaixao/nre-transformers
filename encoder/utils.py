@@ -17,3 +17,6 @@ class Utils:
                 token = str(token).lower()
                 re_tokens.append(token)
         return re_tokens
+
+    def save(self, tensors):
+        return tensors

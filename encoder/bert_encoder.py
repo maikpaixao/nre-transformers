@@ -12,6 +12,11 @@ class BERTEncoder(nn.Module):
                         e_position = False, e_path = False, e_chunks = False, e_semantics = False):
 
         super().__init__()
+        self.position_size = 5
+        self.path_size = 40
+        self.chunks_size = 50
+        self.semantics_size = 50
+
         self.max_length = max_length
         self.token2id = token2id
         self.num_token = len(token2id)
@@ -56,21 +61,21 @@ class BERTEncoder(nn.Module):
         self.tokenizer = BertTokenizer.from_pretrained(pretrain_path)
 
         if e_position:
-            self.hidden_size = self.hidden_size + 10
+            self.hidden_size = self.hidden_size + self.position_size
         elif e_path:
-            self.hidden_size = self.hidden_size + 40
+            self.hidden_size = self.hidden_size + self.path_size
         elif e_chunks:
-            self.hidden_size = self.hidden_size + 50
+            self.hidden_size = self.hidden_size + self.chunks_size
         elif e_semantics:
-            self.hidden_size = self.hidden_size + 50
+            self.hidden_size = self.hidden_size + self.semantics_size
         elif e_position and e_path:
-            self.hidden_size = self.hidden_size + 10 + 40
+            self.hidden_size = self.hidden_size + self.position_size + self.path_size
         elif e_position and e_chunks:
-            self.hidden_size = self.hidden_size + 10 + 50
+            self.hidden_size = self.hidden_size + self.position_size + self.chunks_size
         elif e_path and e_chunks:
-            self.hidden_size = self.hidden_size + 40 + 50
+            self.hidden_size = self.hidden_size + self.path_size + self.chunks_size
         elif e_position and e_path and e_chunks:
-            self.hidden_size = self.hidden_size + 10 + 40 + 50
+            self.hidden_size = self.hidden_size + self.position_size + self.path_size + self.chunks_size
 
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         pos1 = self.pos1_embedding(pos1)
