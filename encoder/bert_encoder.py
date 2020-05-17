@@ -80,9 +80,7 @@ class BERTEncoder(nn.Module):
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         pos1 = self.pos1_embedding(pos1)
         pos2 = self.pos2_embedding(pos2)
-
-        #path = self.path_embedding(path)
-
+        path = self.path_embedding(path)
         chunks = self.word_embedding(chunks)
 
         _, x = self.bert(token, attention_mask=att_mask)
