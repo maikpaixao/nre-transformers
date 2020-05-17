@@ -205,8 +205,8 @@ class BERTEncoder(nn.Module):
         if self.blank_padding:
             while len(indexed_tokens) < self.max_length:
                 indexed_tokens.append(0)
-            #while len(indexed_path) < self.max_length:
-            #    indexed_path.append(0)
+            while len(indexed_path) < self.max_length:
+                indexed_path.append(0)
             while len(indexed_chunks) < self.max_length:
                 indexed_chunks.append(0)
             while len(indexed_semantic) < self.max_length:
@@ -218,8 +218,8 @@ class BERTEncoder(nn.Module):
             indexed_semantic = indexed_semantic[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)
-        indexed_path = torch.tensor(indexed_path).long().unsqueeze(0)
-        indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
+        indexed_path = torch.tensor(indexed_path).long()
+        indexed_chunks = torch.tensor(indexed_chunks).long()
         indexed_semantic = torch.tensor(indexed_semantic).long().unsqueeze(0)
 
         att_mask = torch.zeros(indexed_tokens.size()).long()
