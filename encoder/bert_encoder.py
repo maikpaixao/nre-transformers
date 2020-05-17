@@ -91,7 +91,7 @@ class BERTEncoder(nn.Module):
         if self.e_position:
             x = torch.cat([x, pos1, pos2], 1)
         elif self.e_path:
-            x = torch.cat([x, path], 1)
+            x = torch.cat([x, path], 2)
         elif self.e_chunks:
             x = torch.cat([x, chunks], 1)
         elif self.e_position and self.e_path:
