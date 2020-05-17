@@ -30,10 +30,9 @@ class PathsKNWL:
 
                     _path_wv.append(edge)
                     _cedge_pos = _cedge_pos + 1
-
-            dict_path[c] = {'xs' : xs, 'ys' : ys, 'embed' : np.sum(_path_wv, axis=0)}
+            flattened_path = np.array(_path_wv).flatten().tolist()
+            dict_path[c] = {'xs' : xs, 'ys' : ys, 'embed' : flattened_path}
             c = c+1
-
         return dict_path
     
     def read(self):
