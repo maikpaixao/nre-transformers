@@ -13,9 +13,9 @@ class BERTEncoder(nn.Module):
 
         super().__init__()
         self.position_size = 10
-        self.path_size = 50
-        self.chunks_size = 50
-        self.semantics_size = 50
+        self.path_size = 768
+        self.chunks_size = 768
+        self.semantics_size = 768
 
         self.max_length = max_length
         self.token2id = token2id
@@ -88,7 +88,7 @@ class BERTEncoder(nn.Module):
         else:
             sentence = item['token']
             is_token = True
-            
+
         pos_head = item['h']['pos']
         pos_tail = item['t']['pos']
         ses1 = item['semantics']['ses1']
