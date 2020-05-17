@@ -31,7 +31,7 @@ class PathsKNWL:
                     _path_wv.append(edge)
                     _cedge_pos = _cedge_pos + 1
 
-            dict_path[c] = {'xs' : xs, 'ys' : ys, 'embed' : _path_wv}
+            dict_path[c] = {'xs' : xs, 'ys' : ys, 'embed' : np.sum(_path_wv, axis=0)}
             c = c+1
 
         return dict_path

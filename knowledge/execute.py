@@ -2,9 +2,14 @@
 import json
 import numpy as np
 import pickle
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from keras.utils import to_categorical
 from knowledge.semantic_knowledge import SemanticKNWL
 from knowledge.paths_knowledge import PathsKNWL
 from knowledge.chunk_knowledge import ChunkKNWL
+from transformers.cnn_transformer import CNNTransformer
+
 import sys
 import argparse
 
@@ -16,10 +21,20 @@ def main():
     pf = open('data/'+args.prefix+'.txt', 'r+')
     _ofile = open('../benchmark/semeval/'+args.prefix+'.txt', 'w+')
 
+    transformer = CNNTransformer()
     semantic_builder = SemanticKNWL()
     chunks_builder = ChunkKNWL()
+
     path_builder = PathsKNWL('paths_text/path_'+args.prefix)
 
+    '''
+    data_x = transformer.dict_to_dataframe(path_builder.dict_path)
+    data_y = get_relations(pf.readlines())['relations']
+    label_encoder = LabelEncoder()
+    data_y = label_encoder.fit_transform(data_y)
+    data_y = to_categorical(data_y)
+    transformer.fit(data_x, data_y)
+    '''
     count = 0
 
     for dict in pf.readlines():
@@ -47,6 +62,15 @@ def format(dict):
     entity_2 = json.loads(dict)['t']['name']
     relation = json.loads(dict)['relation']
     return text, h, t, entity_1, entity_2, relation
+
+def get_relations(dicts):
+    relations = pd.DataFrame(columns=['relations'])
+    idx = 0
+    for dict in dicts:
+        _, _, _, _, _, relation = format(dict)
+        relations.loc[idx] = [relation]
+        idx = idx + 1
+    return relations
 
 if __name__ == '__main__':
     main()
