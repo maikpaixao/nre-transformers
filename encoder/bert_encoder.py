@@ -80,7 +80,7 @@ class BERTEncoder(nn.Module):
     def forward(self, token, att_mask, pos1, pos2, path, chunks, semantics):
         pos1 = self.pos1_embedding(pos1)
         pos2 = self.pos2_embedding(pos2)
-        path = self.path_embedding(path)
+        path = self.word_embedding(path)
         chunks = self.word_embedding(chunks)
 
         _, x = self.bert(token, attention_mask=att_mask)
@@ -212,7 +212,7 @@ class BERTEncoder(nn.Module):
             indexed_semantic = indexed_semantic[:self.max_length]
 
         indexed_tokens = torch.tensor(indexed_tokens).long().unsqueeze(0)
-        indexed_path = torch.tensor(indexed_path).long()
+        indexed_path = torch.tensor(indexed_path).long().unsqueeze(0)
         indexed_chunks = torch.tensor(indexed_chunks).long().unsqueeze(0)
         indexed_semantic = torch.tensor(indexed_semantic).long().unsqueeze(0)
 
