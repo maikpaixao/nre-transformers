@@ -31,21 +31,27 @@ class CNNEncoder(BaseEncoder):
         self.e_path = e_path
         self.e_chunks = e_chunks
         self.e_semantics = e_semantics
+        self.position_size = 10
+        self.path_size = 50
+        self.chunks_size = 50
+        self.semantics_size = 50
         self.input_size = 50
         self.drop = nn.Dropout(dropout)
         self.kernel_size = kernel_size
         self.padding_size = padding_size
         self.act = activation_function
+    
+        if e_position:
+            self.input_size = self.input_size + self.position_size
+        if e_path:
+            self.input_size = self.input_size + self.path_size
+        if e_chunks:
+            self.input_size = self.input_size + self.chunks_size
+        if e_semantics:
+            self.input_size = self.input_size + self.semantics_size*2
+
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
         self.pool = nn.MaxPool1d(self.max_length)
-        if e_position:
-            self.input_size = self.input_size + 10
-        if e_path:
-            self.input_size = self.input_size + 50
-        if e_chunks:
-            self.input_size = self.input_size + 50
-        if e_semantics:
-            self.input_size = self.input_size + 100
 
     def forward(self, token, pos1, pos2, path, chunks, ses1, ses2):
         x = self.word_embedding(token)

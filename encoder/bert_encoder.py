@@ -12,7 +12,7 @@ class BERTEncoder(nn.Module):
                         e_position = False, e_path = False, e_chunks = False, e_semantics = False):
 
         super().__init__()
-        self.position_size = 5
+        self.position_size = 10
         self.path_size = 40
         self.chunks_size = 50
         self.semantics_size = 50
