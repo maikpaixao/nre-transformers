@@ -81,10 +81,10 @@ class BERTEncoder(nn.Module):
         pos1 = self.pos1_embedding(pos1)
         pos2 = self.pos2_embedding(pos2)
 
+        path = self.path_embedding(path)
+
         print(path)
         print(path.size())
-
-        path = self.path_embedding(path)
         chunks = self.word_embedding(chunks)
 
         _, x = self.bert(token, attention_mask=att_mask)
