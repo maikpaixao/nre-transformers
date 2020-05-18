@@ -30,6 +30,7 @@ class SoftmaxNN(SentenceRE):
     
     def forward(self, *args):
         rep = self.sentence_encoder(*args)
+        ##print(rep.size)
         rep = self.drop(rep)
         logits = self.fc(rep)
         return logits
