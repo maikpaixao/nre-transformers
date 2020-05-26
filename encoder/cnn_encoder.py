@@ -43,11 +43,11 @@ class CNNEncoder(BaseEncoder):
     
         if e_position:
             self.input_size = self.input_size + self.position_size
-        if e_path:
+        elif e_path:
             self.input_size = self.input_size + self.path_size
-        if e_chunks:
+        elif e_chunks:
             self.input_size = self.input_size + self.chunks_size
-        if e_semantics:
+        elif e_semantics:
             self.input_size = self.input_size + self.semantics_size*2
 
         self.conv = nn.Conv1d(self.input_size, self.hidden_size, self.kernel_size, padding=self.padding_size)
@@ -57,11 +57,11 @@ class CNNEncoder(BaseEncoder):
         x = self.word_embedding(token)
         if self.e_position:
             x = torch.cat([x, self.pos1_embedding(pos1), self.pos2_embedding(pos2)], 2)
-        if self.e_path:
+        elif self.e_path:
             x = torch.cat([x, self.path_embedding(path)], 2)
-        if self.e_chunks:
+        elif self.e_chunks:
             x = torch.cat([x, self.word_embedding(chunks)], 2)
-        if self.e_semantics:
+        elif self.e_semantics:
             semantics = torch.cat([self.word_embedding(ses1), self.word_embedding(ses2)], 2)
 
         x = x.transpose(1, 2)
