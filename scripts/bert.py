@@ -44,6 +44,6 @@ def main():
     f.write('Score: ' + str(result['micro_f1']) + '\n')
     f.close()
 
-if __name__ == '__main__'():
+if __name__ == '__main__':
     main()
     
