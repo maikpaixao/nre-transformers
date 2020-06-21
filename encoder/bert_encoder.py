@@ -58,6 +58,7 @@ class BERTEncoder(nn.Module):
         _, x = self.bert(token, attention_mask=att_mask)
         _, path = self.bert(path, attention_mask=att_mask)
         _, chunks = self.bert(chunks, attention_mask=att_mask)
+        _, semantics = self.bert(semantics, attention_mask=att_mask)
 
         if self.e_position:
             x = torch.cat([x, pos1, pos2], 1)
@@ -71,11 +72,10 @@ class BERTEncoder(nn.Module):
             x = torch.cat([x, pos1, pos2, chunk], 1)
         elif self.e_path and self.e_chunks:
             x = torch.cat([x, path, chunks], 1)
-        elif self.e_position and self.e_path and self.e_chunks:
-            x = torch.cat([x, pos1, pos2, path, chunks], 1)
-        if self.e_semantics:
-            _, semantics = self.bert(semantics, attention_mask=att_mask)
-            x = torch.cat([x, semantics], 1)
+        elif self.e_position and self.e_path and self.e_semantics:
+            x = torch.cat([x, pos1, pos2, path, semantics], 1)
+        #if self.e_semantics:
+        #    x = torch.cat([x, semantics], 1)
 
         return x
 
