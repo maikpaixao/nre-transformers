@@ -108,8 +108,6 @@ def SentenceRELoader(path, rel2id, tokenizer, batch_size,
     data_loader = data.DataLoader(dataset=dataset,
             batch_size=batch_size,
             shuffle=shuffle,
-            pin_memory=True,
-            num_workers=num_workers,
             collate_fn=collate_fn)
     return data_loader
 
