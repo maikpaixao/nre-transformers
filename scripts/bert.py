@@ -32,7 +32,7 @@ def main():
                                         val_path='../benchmark/semeval/val.txt',
                                         test_path='../benchmark/semeval/test.txt',
                                         model=model, ckpt=ckpt, batch_size=64,
-                                        max_epoch=10, lr=3e-5, opt='adam')
+                                        max_epoch=20, lr=3e-5, opt='adam')
 
     framework.train_model(metric='micro_f1')
     framework.load_state_dict(torch.load(ckpt)['state_dict'])
