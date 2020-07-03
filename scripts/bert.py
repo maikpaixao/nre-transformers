@@ -31,7 +31,7 @@ def main():
     framework = sentence_re.SentenceRE(train_path='../benchmark/semeval/train.txt',
                                         val_path='../benchmark/semeval/val.txt',
                                         test_path='../benchmark/semeval/test.txt',
-                                        model=model, ckpt=ckpt, batch_size=64,
+                                        model=model, ckpt=ckpt, batch_size=32,
                                         max_epoch=20, lr=3e-5, opt='adam')
 
     framework.train_model(metric='micro_f1')
