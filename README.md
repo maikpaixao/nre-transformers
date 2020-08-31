@@ -29,4 +29,12 @@ All instances in the dataset are divided into 3 files (train, test, val) in .jso
 python execute.py --prefix "train or test or val"
 ```
 
+## Execute
+
+All instances in the dataset are divided into 3 files (train, test, val) in .json format. In order to generate these datasets you need to run the scripts in the ``knowledge`` folder.
+
+```
+python execute.py --prefix "train or test or val"
+```
+
 
