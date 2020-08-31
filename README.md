@@ -41,7 +41,7 @@ After this it is possible to execute the file by typing the following command.
 ```
 python bert.py
 ```
-All instances in the dataset are divided into 3 files (train, test, val) in .json format. 
+It is possible to specify the type of features to be used (position, path, chunks, semantics) by typing the name of the method as argument in the command.
 ```
 python bert.py --position
 ```
