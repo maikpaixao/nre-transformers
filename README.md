@@ -30,15 +30,14 @@ All instances in the dataset are divided into 3 files (train, test, val) in .jso
 python execute.py --prefix "train or test or val"
 ```
 
-## Execute
+## Execution
 
-All instances in the dataset are divided into 3 files (train, test, val) in .json format. In order to generate these datasets you need to run the scripts in the ``knowledge`` folder.
-
+To execute the training scripts firstly you need to change the actual directory to the ``scripts`` folder.
 
 ```
 cd scripts/
 ```
-All instances in the dataset are divided into 3 files (train, test, val) in .json format. 
+After this it is possible to execute the file by typing the following command. 
 ```
 python bert.py
 ```
