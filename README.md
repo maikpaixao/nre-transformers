@@ -45,5 +45,12 @@ It is possible to specify the type of features to be used (position, path, chunk
 ```
 python bert.py --position
 ```
+## RNN's Models
 
+RNN-based models were execute using the platform Google Collab, so the code is formatted in Jupyter Notebooks and can be easily executed.
+The notebooks can be found at the ``notebooks`` folder.
+
+```
+cd notebooks/
+```
 
