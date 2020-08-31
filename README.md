@@ -1,4 +1,5 @@
-# LisNRE
+# Neural Relation Extraction
+## Laboratoire d’Informatique et Systèmes - Federal Rural University of Pernambuco
 
 
 ## Setup 
