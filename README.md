@@ -1,13 +1,11 @@
-# Neural Relation Extraction
-## Laboratoire d’Informatique et Systèmes - Federal Rural University of Pernambuco
-
+# Neural Relation Extraction using Transformers
 
 ## Setup 
 
 Clone the repository from our github page (don't forget to star us!)
 
 ```bash
-git clone https://gitlab.lis-lab.fr/maik.paixao/lisnre.git
+git clone https://github.com/maikpaixao/nre-transformers.git
 ```
 
 Then install all the requirements:
